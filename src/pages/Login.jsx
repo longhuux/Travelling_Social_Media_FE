@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { login } from "../services/User";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slice/user.slice";
-import { useToast } from "@chakra-ui/react";
+
 
 function Copyright(props) {
   return (
@@ -40,7 +40,6 @@ const defaultTheme = createTheme();
 
 export default function SignInSide() {
   const dispatch = useDispatch();
-  const toast = useToast();
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
@@ -51,19 +50,9 @@ export default function SignInSide() {
       // });
       const user = await login(data.get("email"), data.get("password"));
       console.log(user.data);
-      toast({
-        status: "success",
-        title: "Login Success",
-        position: "top",
-      });
       dispatch(loginSuccess(user.data));
     } catch (error) {
       console.log(error);
-      toast({
-        status: "failed",
-        title: "Login Failed",
-        position: "top",
-      });
     }
   };
 
