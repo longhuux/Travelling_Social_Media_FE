@@ -1,8 +1,18 @@
 import React from 'react'
+import LeftSidebar from '../components/leftSidebar/LeftSidebar'
+import NewsFeed from '../components/feeds/NewsFeed'
+import RightSidebar from '../components/rightSidebar/rightSidebar'
 
 function Home() {
   return (
-    <div>Home</div>
+    <>
+        
+        <div className='flex content-center justify-center'>
+          <LeftSidebar/>
+          <NewsFeed/>
+          <RightSidebar/>
+        </div>
+    </>
   )
 }
 
