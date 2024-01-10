@@ -7,10 +7,6 @@ import { IconButton, TextField } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import Button from "@mui/material/Button";
-import Autocomplete from "@mui/material/Autocomplete";
-import PublicIcon from "@mui/icons-material/Public";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import InputLabel from "@mui/material/InputLabel";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
@@ -19,49 +15,35 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
-
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
+import axios from "axios";
 
 function PostForm() {
-  const [selectedOption, setSelectedOption] = useState("");
   const [media, setMedia] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [customInput, setCustomInput] = useState("");
   const [milestone, setMilestone] = useState();
   const [selectMilestoneForm, setSelectMilestoneForm] = useState(true);
   const [createMilestoneForm, setCreateMilestoneForm] = useState(false);
+  const [content, setContent] = useState("");
 
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
   const handleMilestoneChange = (e) => {
     setMilestone(e.target.value);
   };
-
-  const handleCustomInputChange = (event) => {
-    setCustomInput(event.target.value);
+  const handleAddMilestoneChange = (e) => {
+    setMilestone(e.target.value);
   };
-
+  const handleContentChange = (e) => {
+    setContent(e.target.value);
+  };
   const toggleCreateMilestoneForm = (e) => {
     setCreateMilestoneForm(!createMilestoneForm);
     setSelectMilestoneForm(!selectMilestoneForm);
   };
 
-  const disabledSelectMilestone = (e) => {
-    setSelectMilestoneForm(false);
-  };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    file.preview = URL.createObjectURL(file);
+    setMedia(file);
 
     if (file) {
       const reader = new FileReader();
@@ -81,46 +63,52 @@ function PostForm() {
     };
   }, [media]);
 
-  const handleUploadMedia = (e) => {
-    const file = e.target.files[0];
-    file.preview = URL.createObjectURL(file);
-    setMedia(file);
+  //   const handleUploadMedia = (e) => {
+  //     const file = e.target.files[0];
+  //     file.preview = URL.createObjectURL(file);
+  //     setMedia(file);
+  //   };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("milestone", "658ad938b7932886de4ba079");
+    formData.append("content", content);
+    if (selectedFile) {
+      formData.append("images", selectedFile);
+    }
+
+    for (const value of formData.values()) {
+      console.log(value);
+    }
+    const apiUrl =
+      "http://localhost:8000/post/create-post/658d822c0dd01b0d2200bf5b";
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      });
+
+    //   const response = await axios(apiUrl,formData)
+      console.log(response)
+      if (response.ok) {
+        console.log("Data successfully sent to the API");
+      } else {
+        console.error("Failed to send data to the API");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
+
   return (
     <>
       <div className="flex border w-full h-auto mt-2 rounded-lg">
         <div className="w-[40px] p-3">avt</div>
         <div className="flex flex-col w-full p-3 ">
-          <select
-            className="w-fit rounded-full border border-solid text-blue-400 px-2 border-blue-400"
-            id="privacyOptions"
-            value={selectedOption}
-            onChange={handleOptionChange}
-          >
-            <option value={0}>Everyone</option>
-            <option value={1}>Only Me</option>
-            <option value={2}>Custom</option>
-          </select>
-          {selectedOption == 2 && (
-            <Autocomplete
-              className="my-3 !z-0"
-              multiple
-              size="small"
-              limitTags={2}
-              id="multiple-limit-tags"
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Custom privacy list"
-                  placeholder="Username"
-                  className="!z-0"
-                />
-              )}
-              sx={{ width: "500px" }}
-            />
-          )}
           <div className="flex my-3 content-center items-center ">
             <h2 className="mr-4">Milestone: </h2>
             {selectMilestoneForm === true && (
@@ -152,11 +140,14 @@ function PostForm() {
             )}
             {createMilestoneForm === true && (
               <div className="flex self-center items-center">
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
-                    <DatePicker slotProps={{ textField: { size: 'small' } }} label="Select a new milestone" />
+                    <DatePicker
+                      slotProps={{ textField: { size: "small" } }}
+                      label="Select a new milestone"
+                      value={milestone}
+                      onChange={handleAddMilestoneChange}
+                    />
                   </DemoContainer>
                 </LocalizationProvider>
                 <RemoveCircleTwoToneIcon
@@ -175,6 +166,8 @@ function PostForm() {
             maxRows={10}
             rows={3}
             variant="standard"
+            value={content}
+            onChange={handleContentChange}
           />
           {preview && (
             <div>
@@ -197,14 +190,20 @@ function PostForm() {
               )}
             </div>
           )}
-          {preview && (<hr className="mt-3"/>)}
-          <input
-            id="media"
-            type="file"
-            onChange={handleFileChange}
-            accept="image/*, video/*"
-            hidden
-          />
+          {preview && <hr className="mt-3" />}
+          <form
+            action="/create-post"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <input
+              id="media"
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*, video/*"
+              hidden
+            />
+          </form>
           <div className="flex w-full justify-between p-2">
             <div>
               <label htmlFor="media" alt="Media">
@@ -218,7 +217,11 @@ function PostForm() {
                 </IconButton>
               </label>
             </div>
-            <Button className="!rounded-full" variant="contained">
+            <Button
+              className="!rounded-full"
+              variant="contained"
+              onClick={handleSubmit}
+            >
               Post
             </Button>
           </div>
