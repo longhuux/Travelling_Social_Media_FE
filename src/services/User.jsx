@@ -12,6 +12,16 @@ const axiosInstance = axios.create({
 //     }
 //     return config;
 // }
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token")
+
+  if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+  }
+
+  return config
+})
+
 
 export const login = (email, password) => {
   return axiosInstance.post("/api/v1/user/login", { email, password });
