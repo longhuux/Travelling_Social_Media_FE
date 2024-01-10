@@ -26,10 +26,16 @@ export const register = (fullName, email, userName, password) => {
   });
 };
 
-// export const forgetpass = (email) =>{
-//   return axiosInstance.post("/api/v1/user/forgetpass", { email });
-// }
+export const forgetpass = (email) => {
+  return axiosInstance.post("/api/v1/user/forgetpass", { email });
+};
 
-// export const changepass = (password) =>{
-//   return axiosInstance.post("/api/v1/user/changepass/:id", { password });
-// }
+export const changepass = (oldPassword, newPassword, userId) => {
+  return axiosInstance.post(
+    `/api/v1/user/changepass/${userId}`,
+    {
+      oldPassword,
+      newPassword,
+    }
+  );
+};

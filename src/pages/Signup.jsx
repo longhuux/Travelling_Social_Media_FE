@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { register } from "../services/User";
 import { useDispatch } from "react-redux";
 import { registerSuccess } from "../redux/slice/user.slice";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -39,16 +40,18 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      console.log({
-        fullName: data.get("fullName"),
-        email: data.get("email"),
-        userName: data.get("userName"),
-        password: data.get("password"),
-      });
+      // console.log({
+      //   fullName: data.get("fullName"),
+      //   email: data.get("email"),
+      //   userName: data.get("userName"),
+      //   password: data.get("password"),
+      // });
       const user = await register(
         data.get("fullName"),
         data.get("email"),
@@ -56,6 +59,14 @@ export default function SignUp() {
         data.get("password")
       );
       console.log(user.data);
+      const token = user.data.token;
+
+      if (token) {
+        dispatch(loginSuccess(user.data));
+
+        localStorage.setItem("token", token);
+        navigate("/home", { replace: true });
+      }
       dispatch(registerSuccess(user));
     } catch (error) {
       console.log(error);
