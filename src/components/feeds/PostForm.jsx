@@ -63,12 +63,6 @@ function PostForm() {
     };
   }, [media]);
 
-  //   const handleUploadMedia = (e) => {
-  //     const file = e.target.files[0];
-  //     file.preview = URL.createObjectURL(file);
-  //     setMedia(file);
-  //   };
-
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("milestone", "658ad938b7932886de4ba079");
@@ -77,24 +71,16 @@ function PostForm() {
       formData.append("images", selectedFile);
     }
 
-    for (const value of formData.values()) {
-      console.log(value);
-    }
+    // for (const value of formData.values()) {
+    //   console.log(value);
+    // }
     const apiUrl =
       "http://localhost:8000/post/create-post/658d822c0dd01b0d2200bf5b";
 
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: formData,
-      });
-
-    //   const response = await axios(apiUrl,formData)
+      const response = await axios.post(apiUrl,formData)
       console.log(response)
-      if (response.ok) {
+      if (response.statusText==="OK") {
         console.log("Data successfully sent to the API");
       } else {
         console.error("Failed to send data to the API");
@@ -194,7 +180,7 @@ function PostForm() {
           <form
             action="/create-post"
             method="post"
-            enctype="multipart/form-data"
+            encType="multipart/form-data"
           >
             <input
               id="media"

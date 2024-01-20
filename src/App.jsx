@@ -5,11 +5,10 @@ import SignInSide from "./pages/Login";
 import SignUp from "./pages/Signup";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Post from "./components/feeds/Post";
-import CreateJourney from "./components/leftSidebar/CreateJourney";
 import PostForm from "./components/feeds/PostForm";
 import SignIn from "./pages/Changepass";
 import ForgetPass from "./pages/Forgetpass";
+import VacationDetails from "./pages/VacationDetails";
 import Profile from "./pages/Profile";
 
 
@@ -23,6 +22,7 @@ function App() {
         <Route path="/test" element={<PostForm />} />
         <Route path="/changepass/:id" element={<SignIn />} />
         <Route path="/forgetpass" element={<ForgetPass />} />
+        <Route path="/vacation/:id" element={<VacationDetails />} />
         <Route path="/profile/:id" element={<Profile />} />
       </Routes>
     </>
