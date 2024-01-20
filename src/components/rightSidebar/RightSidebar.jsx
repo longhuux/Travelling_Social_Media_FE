@@ -140,7 +140,7 @@ function RightSidebar() {
             </div>
           </div>
           <div className="self-stretch text-slate-600 text-[13px] font-normal leading-none">
-            © 2023 Twitter, Inc.
+            © 2024 Twitter, Inc.
           </div>
         </div>
       </div>

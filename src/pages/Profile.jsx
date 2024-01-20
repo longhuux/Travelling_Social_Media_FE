@@ -1,18 +1,18 @@
 import React from 'react'
 import LeftSidebar from '../components/leftSidebar/LeftSidebar'
-import NewsFeed from '../components/feeds/NewsFeed'
 import RightSidebar from '../components/rightSidebar/rightSidebar'
+import Profiles from '../components/leftSidebar/Profiles'
 
-function Home() {
+function Profile() {
   return (
     <>
         <div className='flex content-center justify-center'>
           <LeftSidebar/>
-          <NewsFeed/>
+          <Profiles/>
           <RightSidebar/>
         </div>
     </>
   )
 }
 
-export default Home
+export default Profile

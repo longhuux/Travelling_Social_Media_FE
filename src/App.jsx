@@ -9,6 +9,7 @@ import PostForm from "./components/feeds/PostForm";
 import SignIn from "./pages/Changepass";
 import ForgetPass from "./pages/Forgetpass";
 import VacationDetails from "./pages/VacationDetails";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/changepass/:id" element={<SignIn />} />
         <Route path="/forgetpass" element={<ForgetPass />} />
         <Route path="/vacation/:id" element={<VacationDetails />} />
+        <Route path="/profile/:id" element={<Profile />} />
       </Routes>
     </>
   );

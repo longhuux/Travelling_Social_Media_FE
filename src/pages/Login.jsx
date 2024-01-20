@@ -53,12 +53,13 @@ export default function SignInSide() {
       // });
       const user = await login(data.get("email"), data.get("password"));
       console.log(user.data);
-      const token = user.data.token;
+      const { token } = user.data;
 
       if (token) {
-        dispatch(loginSuccess(user.data));
-
+        const { password, ...userWithoutPassword } = user.data.data;
+        dispatch(loginSuccess(userWithoutPassword));
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(userWithoutPassword));
         navigate("/home", { replace: true });
       }
     } catch (error) {

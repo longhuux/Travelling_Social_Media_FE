@@ -62,8 +62,7 @@ export default function SignUp() {
       const token = user.data.token;
 
       if (token) {
-        dispatch(loginSuccess(user.data));
-
+        dispatch(registerSuccess(user.data));
         localStorage.setItem("token", token);
         navigate("/home", { replace: true });
       }
@@ -158,7 +157,7 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  autoComplete="password"
                 />
               </Grid>
               {/* <Grid item xs={12}>
