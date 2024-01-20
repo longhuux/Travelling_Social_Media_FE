@@ -14,7 +14,6 @@ function Home() {
   if (!token) {
 
     console.log(token);
-    // navigate("/sign-in");
     return <Navigate to = "/sign-in"></Navigate>;
   }
 
