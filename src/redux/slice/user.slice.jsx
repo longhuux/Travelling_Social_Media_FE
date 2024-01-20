@@ -11,7 +11,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
+      state.user = action.payload;
       state.token = action.payload.token;
     },
     registerSuccess: (state, action) => {
@@ -27,5 +27,11 @@ export const userSlice = createSlice({
     },
   },
 });
-export const { loginSuccess, registerSuccess, forgetpassSuccess, changepassSuccess } = userSlice.actions;
+export const {
+  loginSuccess,
+  registerSuccess,
+  forgetpassSuccess,
+  changepassSuccess,
+} = userSlice.actions;
+
 export default userSlice.reducer;
