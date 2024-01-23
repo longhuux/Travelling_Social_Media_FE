@@ -14,17 +14,24 @@ import { green, orange } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import EqualizerOutlinedIcon from "@mui/icons-material/EqualizerOutlined";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 function VacationFeeds(vacation) {
   const [expanded, setExpanded] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleExpansion = () => {
     setExpanded((prevExpanded) => !prevExpanded);
   };
+  const handleSubmit = ()=>{
+    navigate(`/vacation/${vacation.vacation._id}`)
+  }
 
+  console.log(vacation.vacation._id)
   return (
     <>
+    <div className="mb-5">
       <div className="border w-full rounded-lg px-8 pt-8 rounded-b-none">
         <div className="flex gap-6">
           <div className="w-2/12 flex flex-col items-center">
@@ -153,9 +160,10 @@ function VacationFeeds(vacation) {
           </Grid>
         </div>
       </div>
-      <Button variant="contained" className="w-full !rounded-t-none">
+      <Button onClick={handleSubmit} variant="contained" className="w-full !rounded-t-none">
         View details
       </Button>
+      </div>
     </>
   );
 }
