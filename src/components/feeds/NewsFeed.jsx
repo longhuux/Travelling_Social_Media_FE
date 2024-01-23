@@ -48,7 +48,7 @@ function NewsFeed() {
 
   return (
     <div>
-      <div className="w-[600px] px-3 flex-col justify-start items-start inline-flex overflow-auto scroll-smooth">
+      <div className="w-[643px] flex-col justify-start items-start inline-flex overflow-y-auto scroll-smooth">
         {/* {vacations.map((vacation) => {
           return <VacationFeeds key={vacation._id} vacation={vacation} />;
         })} */}

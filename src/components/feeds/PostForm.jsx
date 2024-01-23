@@ -65,15 +65,12 @@ function PostForm() {
 
   const handleSubmit = async () => {
     const formData = new FormData();
+    formData.append("vacation")
     formData.append("milestone", "658ad938b7932886de4ba079");
     formData.append("content", content);
     if (selectedFile) {
       formData.append("images", selectedFile);
     }
-
-    // for (const value of formData.values()) {
-    //   console.log(value);
-    // }
     const apiUrl =
       "http://localhost:8000/post/create-post/658d822c0dd01b0d2200bf5b";
 
@@ -93,7 +90,6 @@ function PostForm() {
   return (
     <>
       <div className="flex border w-full h-auto mt-2 rounded-lg">
-        <div className="w-[40px] p-3">avt</div>
         <div className="flex flex-col w-full p-3 ">
           <div className="flex my-3 content-center items-center ">
             <h2 className="mr-4">Milestone: </h2>
