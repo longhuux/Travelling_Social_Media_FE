@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,6 +16,9 @@ import { login } from "../services/User";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slice/user.slice";
 import { useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import Loading from "./Loading";
+
 
 function Copyright(props) {
   return (
@@ -43,9 +46,24 @@ export default function SignInSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [showAlert, setShowAlert] = React.useState(false);
+
+  const [loading, setLoading] = useState(true);
+  
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
+      setShowAlert(false);
+      setLoading(true);
       const data = new FormData(event.currentTarget);
       // console.log({
       //   email: data.get("email"),
@@ -60,12 +78,20 @@ export default function SignInSide() {
         dispatch(loginSuccess(userWithoutPassword));
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userWithoutPassword));
-        navigate("/home", { replace: true });
+        navigate("/", { replace: true });
+      } else {
+        setShowAlert(true);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -135,14 +161,34 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
+              {showAlert && (
+                <Alert
+                  variant="filled"
+                  severity="error"
+                  sx={{
+                    position: "fixed",
+                    bottom: (theme) => theme.spacing(2),
+                    left: (theme) => theme.spacing(2),
+                    backgroundColor: (theme) => theme.palette.error.main,
+                    color: (theme) => theme.palette.error.contrastText,
+                    padding: (theme) => theme.spacing(1),
+                    borderRadius: (theme) => theme.shape.borderRadius,
+                  }}
+                >
+                  Email or Password not found
+                </Alert>
+              )}
+
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loading}
               >
-                Sign In
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
+              {loading && <Loading />}
               <Grid container>
                 <Grid item xs>
                   <Link to="/forgetpass" variant="body2">

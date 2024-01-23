@@ -15,7 +15,7 @@ export const userSlice = createSlice({
       state.token = action.payload.token;
     },
     registerSuccess: (state, action) => {
-      state.user = action.payload.user;
+      state.user = action.payload;
       state.email = action.payload.email;
       state.token = action.payload.token;
     },
