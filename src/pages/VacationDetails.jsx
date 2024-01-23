@@ -1,6 +1,6 @@
 import React from 'react'
 import LeftSidebar from '../components/leftSidebar/LeftSidebar'
-import RightSidebar from '../components/rightSidebar/rightSidebar'
+import RightSidebar from '../components/rightSidebar/RightSidebar'
 import Vacation from '../components/vacation/Vacation'
 
 function VacationDetails() {
