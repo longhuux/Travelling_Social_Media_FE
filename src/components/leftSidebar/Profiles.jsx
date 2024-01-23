@@ -7,50 +7,65 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useSelector } from "react-redux";
+import profileicon from "../../img/profileicon.png";
+import background from "../../img/background.jpg";
+import tichxanh from "../../img/tichxanh.png";
+import EditProfileModal from "./EditProfiles";
+
 
 const Profiles = () => {
-
   const user = useSelector((state) => state.users);
 
   const [tabValue, setTabValue] = useState("1");
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+  
 
   const navigate = useNavigate();
 
-  const handleBack = () => navigate("/home");
+  const handleBack = () => navigate("/");
 
   const handleOpenProfileModel = () => {
     console.log("openprofile");
+    setIsEditProfileOpen(true);
   };
+
+  const handleCloseProfileModel = () => {
+    setIsEditProfileOpen(false);
+  };
+
   const handleFollowUser = () => {
     console.log("followuser");
+    setIsEditProfileOpen(false);
   };
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
     if (newValue === 3) {
       console.log("likes");
-    } else if (newValue ===1){
+    } else if (newValue === 1) {
       console.log("posts");
     }
   };
 
   return (
     <div>
-      <section className={`z-50 flex items-center sticky top-0 bg-opacity-95`}>
+      <section className={`z-50 flex items-center sticky top-0 bg-white`}>
         <KeyboardBackspaceIcon
           className="cursor-pointer"
           onClick={handleBack}
         />
-        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">{user.user.fullName}</h1>
+        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">
+          {user.user.fullName}
+        </h1>
       </section>
 
       <section>
         <img
           className="w-[100%] h-[15rem] object-cover"
-          src="https://phunugioi.com/wp-content/uploads/2020/02/anh-phong-canh-thien-nhien-dep.jpg"
+          src={background}
           alt=""
         />
       </section>
@@ -60,7 +75,7 @@ const Profiles = () => {
           <Avatar
             className="transform -translate-y-24"
             alt=""
-            src="https://i.pinimg.com/564x/02/33/2a/02332a6ec52c97953ea9a9107adef36f.jpg"
+            src={profileicon}
             sx={{ width: "10rem", height: "10rem", border: "4px solid white" }}
           />
           {true ? (
@@ -80,14 +95,15 @@ const Profiles = () => {
               {true ? "Follow" : "UnFollow"}
             </Button>
           )}
+          <EditProfileModal open={isEditProfileOpen} handleClose={handleCloseProfileModel} user={user} />
         </div>
         <div>
           <div className="flex items-center">
-            <h1 className="font-bold text-lg">{user.user.fullName}</h1>
+            <h1 className="font-bold text-lg"> {user.user.fullName}</h1>
             {true && (
               <img
                 className="ml-2 w-5 h-5"
-                src="https://abs.twimg.com/responsive-web/client-web/verification-card-v2@3x.8ebee01a.png"
+                src={tichxanh}
                 alt=""
               />
             )}
@@ -101,12 +117,8 @@ const Profiles = () => {
           </p>
           <div className="py-1 flex space-x-5">
             <div className="flex items-center text-gray-500">
-              <LocationOnIcon />
-              <p className="ml-2">Viet Nam</p>
-            </div>
-            <div className="flex items-center text-gray-500">
               <CalendarMonthIcon />
-              <p className="ml-2">Joined January 2024</p>
+              <p className="ml-2">Date of Birth: </p>
             </div>
           </div>
           <div className="flex items-center space-x-5">

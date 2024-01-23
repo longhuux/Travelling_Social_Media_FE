@@ -22,6 +22,8 @@ function LeftSidebar() {
   // console.log(user);
   const dispatch = useDispatch();
 
+  
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -56,15 +58,17 @@ function LeftSidebar() {
         </div>
         <div className="self-stretch h-[602px] flex-col justify-start items-start gap-[38px] flex">
           <div className="px-3 flex-col justify-start items-start gap-8 flex">
-            <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer">
-              <div className="w-[26px] h-[26px] relative">
-                <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" />
-                <HomeRoundedIcon />
+            <Link to="/">
+              <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer">
+                <div className="w-[26px] h-[26px] relative">
+                  <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" />
+                  <HomeRoundedIcon />
+                </div>
+                <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
+                  Home
+                </div>
               </div>
-              <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
-              <Link to="/home">Home</Link>  
-              </div>
-            </div>
+            </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
               <div className="w-[26px] h-[26px] relative">
                 <SearchIcon />
@@ -97,20 +101,16 @@ function LeftSidebar() {
                 Bookmarks
               </div>
             </div>
-            {/* <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
-              <div className="w-[26px] h-[26px] relative" />
-              <div className="w-[43px] text-neutral-900 text-xl font-normal leading-normal">
-                Lists
+            <Link to={`/profile/${user.user._id}`}>
+              <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+                <div className="w-[26px] h-[26px] relative">
+                  <PersonIcon />
+                </div>
+                <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
+                  Profile
+                </div>
               </div>
-            </div> */}
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
-              <div className="w-[26px] h-[26px] relative">
-                <PersonIcon />
-              </div>
-              <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
-               <Link to="/profile/:id">Profile</Link> 
-              </div>
-            </div>
+            </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
               <div className="w-[26px] h-[26px] relative">
                 <MoreHorizIcon />
