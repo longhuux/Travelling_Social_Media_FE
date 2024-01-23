@@ -1,18 +1,18 @@
 import React from 'react'
 import LeftSidebar from '../components/leftSidebar/LeftSidebar'
 import RightSidebar from '../components/rightSidebar/RightSidebar'
-import Profiles from '../components/leftSidebar/Profiles'
+import Vacation from '../components/vacation/Vacation'
 
-function Profile() {
+function VacationDetails() {
   return (
     <>
         <div className='flex content-center justify-center'>
           <LeftSidebar/>
-          <Profiles/>
+          <Vacation/>
           <RightSidebar/>
         </div>
     </>
   )
 }
 
-export default Profile
+export default VacationDetails

@@ -63,38 +63,21 @@ function PostForm() {
     };
   }, [media]);
 
-  //   const handleUploadMedia = (e) => {
-  //     const file = e.target.files[0];
-  //     file.preview = URL.createObjectURL(file);
-  //     setMedia(file);
-  //   };
-
   const handleSubmit = async () => {
     const formData = new FormData();
+    formData.append("vacation")
     formData.append("milestone", "658ad938b7932886de4ba079");
     formData.append("content", content);
     if (selectedFile) {
       formData.append("images", selectedFile);
     }
-
-    for (const value of formData.values()) {
-      console.log(value);
-    }
     const apiUrl =
       "http://localhost:8000/post/create-post/658d822c0dd01b0d2200bf5b";
 
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: formData,
-      });
-
-    //   const response = await axios(apiUrl,formData)
+      const response = await axios.post(apiUrl,formData)
       console.log(response)
-      if (response.ok) {
+      if (response.statusText==="OK") {
         console.log("Data successfully sent to the API");
       } else {
         console.error("Failed to send data to the API");
@@ -107,7 +90,6 @@ function PostForm() {
   return (
     <>
       <div className="flex border w-full h-auto mt-2 rounded-lg">
-        <div className="w-[40px] p-3">avt</div>
         <div className="flex flex-col w-full p-3 ">
           <div className="flex my-3 content-center items-center ">
             <h2 className="mr-4">Milestone: </h2>
@@ -194,7 +176,7 @@ function PostForm() {
           <form
             action="/create-post"
             method="post"
-            enctype="multipart/form-data"
+            encType="multipart/form-data"
           >
             <input
               id="media"

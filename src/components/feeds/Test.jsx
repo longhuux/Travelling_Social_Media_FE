@@ -1,5 +1,5 @@
 import React from "react";
-
+import { CLOUDINARY_URL } from "../../config";
 function Test() {
   return (
     <main className="w-full py-3">
@@ -45,8 +45,8 @@ function Test() {
         <div className="p-4">
           <h1 className="text-2xl font-bold mb-2">Italian Expedition</h1>
           <img
-            src="https://livetraffic.eu/wp-content/uploads/placeholder-300x300.png"
-            alt="Italian Expedition"
+            // src="https://livetraffic.eu/wp-content/uploads/placeholder-300x300.png"
+            src={`${CLOUDINARY_URL}/1704990900390-iamge.png`}            alt="Italian Expedition"
             className="w-[521px] h-auto object-cover mb-4 rounded-lg"
           />
           <div className="flex items-center gap-2 mb-4">

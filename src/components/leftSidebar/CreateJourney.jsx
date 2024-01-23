@@ -16,14 +16,23 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LicenseInfo } from "@mui/x-date-pickers-pro";
-import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
+import { CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers } from "../../redux/slice/userSlice";
+import { createVacation } from "../../redux/slice/vacationSlice";
+import Timeline from "@mui/lab/Timeline";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
+import TimelineOppositeContent, {
+  timelineOppositeContentClasses,
+} from "@mui/lab/TimelineOppositeContent";
 
 LicenseInfo.setLicenseKey(
   "e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y"
@@ -43,123 +52,119 @@ const style = {
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const top100Films = [
-  { title: "user1", year: 1994 },
-  { title: "user2", year: 1972 },
-];
 export default function BasicModal() {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [milestones, setMilestones] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
   const dispatch = useDispatch();
   const { users, status, error } = useSelector((state) => state.user);
+  const [open, setOpen] = useState(false);
+  const [milestones, setMilestones] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("public");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [userTags, setUseTags] = useState([]);
   const [allowedUsers, setAllowedUsers] = useState([]);
-  const [estimatedTime, setEstimatedTime] = useState([
-    dayjs("2022-04-17"),
-    dayjs("2022-04-21"),
-  ]);
-  const [startedAt, setStartedAt] = useState();
-  const [endedAt, setEndedAt] = useState();
+  const [estimatedTime, setEstimatedTime] = useState([dayjs(), dayjs()]);
+  const [milestonesDesc, setMilestonesDesc] = useState();
+  const [milestonesDate, setMilestonesDate] = useState(dayjs());
+  const [sortedMilestones, setSortedMilestones] = useState([]);
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
   const handleDescChange = (e) => {
     setDesc(e.target.value);
   };
-  const handleUserTagsChange = (e) => {
-    setUseTags(e.target.value);
+  const handleMilestonesDescChange = (e) => {
+    setMilestonesDesc(e.target.value);
   };
-  const handleAllowedUsersChange = (e) => {
-    setAllowedUsers(e.target.value);
-  };
+  useEffect(() => {
+    const cloneMilestones = [...milestones];
+    cloneMilestones.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+    setSortedMilestones(cloneMilestones);
+  }, [milestones]);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center"><CircularProgress color="inherit" className="flex justify-center" /></div>;
   }
 
   if (status === "failed") {
     return <div>Error: {error}</div>;
   }
 
-  const usernames = users.map((user) => user.userName);
-
-  const handleAddInput = () => {
-    setMilestones([...milestones, { id: milestones.length, value: "" }]);
+  const handleAddMilestone = () => {
+    if (milestonesDate && milestonesDesc) {
+      setMilestones([
+        ...milestones,
+        {
+          time: milestonesDate.format("LL"),
+          desc: milestonesDesc,
+          key: new Date().getTime(),
+        },
+      ]);
+      setMilestonesDesc("");
+      setMilestonesDate(dayjs(null));
+    }
   };
-
+  const handleDeleteMilestone = (index) => {
+    const newMilestones = [...sortedMilestones];
+    newMilestones.splice(index, 1);
+    setSortedMilestones(newMilestones);
+    setMilestones(newMilestones);
+  };
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
-  const handleInputChange = (id, value) => {
-    const updatedMilestones = milestones.map((milestone) =>
-      milestone.id === id ? { ...milestone, value } : milestone
-    );
-    setMilestones(updatedMilestones);
+  const vacationData = {
+    privacy: selectedOption,
+    title: title,
+    desc: desc,
+    participants: userTags.map((userTags) => userTags._id),
+    startedAt: estimatedTime[0],
+    endedAt: estimatedTime[1],
+    milestones: milestones,
   };
-
-  const handleRemoveInput = (id) => {
-    const updatedMilestones = milestones.filter(
-      (milestone) => milestone.id !== id
+  if (selectedOption === "onlyUserChoose") {
+    vacationData.userChoose = allowedUsers.map(
+      (allowedUsers) => allowedUsers._id
     );
-    setMilestones(updatedMilestones);
-  };
-
+  }
   const handleSubmit = async () => {
-    const formData = new FormData();
-    // formData.append("privacy", selectedOption);
-    formData.append("title", title);
-    formData.append("desc", desc);
-    // formData.append("paticipants", userTags);
-    formData.append("startedAt", estimatedTime[0]);
-    formData.append("endedAt", estimatedTime[1]);
-
-    if (selectedOption === "allowedUsers") {
-      formData.append("allowedUsers", allowedUsers);
-    }
-    console.log(selectedOption,title,desc,userTags,estimatedTime[0],estimatedTime[1])
-    console.log(formData)
-    const apiUrl = "http://localhost:8000/vacation/create/658839433bd62f956a2f0876";
+    // const apiUrl =
+    //   "http://localhost:8000/vacation/create/658839433bd62f956a2f0876";
 
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-        // const response = await axios.post(apiUrl,{
-        //     title: title,
-        //     desc: desc,
-        //     startedAt: estimatedTime[0],
-        //     endedAt: estimatedTime[1],
-        // })
-
-        console.log(response)
-
-      if (response.ok) {
-        console.log("Data successfully sent to the API");
-      } 
-      else {
-        console.error("Failed to send data to the API");
-      }
+      // const response = await axios.post(apiUrl, vacationData);
+      dispatch(createVacation(vacationData));
+      handleClose();
     } catch (error) {
       console.error("Error:", error.message);
     }
-    handleClose();
   };
 
+  const getModules = () => {
+    return sortedMilestones.map((milestone, index) => {
+      return (
+        <TimelineItem key={milestone.key}>
+          <TimelineOppositeContent color="textSecondary">
+            {milestone.time}
+          </TimelineOppositeContent>
+          <TimelineSeparator>
+            <TimelineDot />
+            <TimelineConnector />
+          </TimelineSeparator>
+          <TimelineContent>{milestone.desc}</TimelineContent>
+          <button onClick={() => handleDeleteMilestone(index)}>Delete</button>
+        </TimelineItem>
+      );
+    });
+  };
   return (
     <>
       <Button
@@ -184,19 +189,20 @@ export default function BasicModal() {
             id="privacyOptions"
             value={selectedOption}
             onChange={handleOptionChange}
+            defaultValue={"public"}
           >
             <option value={"public"}>Everyone</option>
             <option value={"onlyMe"}>Only Me</option>
-            <option value={"allowedUsers"}>Custom</option>
+            <option value={"onlyUserChoose"}>Custom</option>
           </select>
-          {selectedOption === "allowedUsers" && (
+          {selectedOption === "onlyUserChoose" && (
             <Autocomplete
               className="my-3 !z-0"
               multiple
               size="small"
               limitTags={2}
               id="multiple-limit-tags"
-              onChange={handleAllowedUsersChange}
+              onChange={(event, value) => setAllowedUsers(value)}
               options={users}
               getOptionLabel={(option) => option.userName}
               renderInput={(params) => (
@@ -265,43 +271,44 @@ export default function BasicModal() {
               </DemoItem>
             </LocalizationProvider>
             <div className="flex items-center">
-              <h1 className="m mr-4">Milestones: </h1>
+              <h1 className="mr-4">Milestones: </h1>
             </div>
-            {milestones.map((milestone) => (
-              <div key={milestone.id} className="w-full">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      label="Milestone"
-                      onChange={(e, value) => {
-                        setMilestones(value);
-                      }}
-                    />
-                    <TextField
-                      id="outlined-multiline-flexible"
-                      label="Describe"
-                      variant="outlined"
-                      multiline
-                      maxRows={4}
-                      className="w-full"
-                    />
-                    <RemoveCircleTwoToneIcon
-                      onClick={() => handleRemoveInput(milestone.id)}
-                      color="warning"
-                      className="self-center"
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-            ))}
-            <Fab
-              size="small"
-              color="primary"
-              aria-label="add"
-              onClick={handleAddInput}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Time"
+                  value={milestonesDate}
+                  onChange={(newValue) => setMilestonesDate(newValue)}
+                />
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="Describe"
+                  variant="outlined"
+                  multiline
+                  maxRows={4}
+                  className="w-full"
+                  value={milestonesDesc}
+                  onChange={handleMilestonesDescChange}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleAddMilestone}
+                >
+                  <AddIcon />
+                </Button>
+              </DemoContainer>
+            </LocalizationProvider>
+            <Timeline
+              sx={{
+                [`& .${timelineOppositeContentClasses.root}`]: {
+                  flex: 0.2,
+                },
+              }}
             >
-              <AddIcon />
-            </Fab>
+              {getModules()}
+            </Timeline>
+
             <Button
               className="w-full !bg-blue-500 !rounded-full !text-white"
               onClick={handleSubmit}

@@ -1,7 +1,7 @@
 import React from "react";
 import LeftSidebar from "../components/leftSidebar/LeftSidebar";
 import NewsFeed from "../components/feeds/NewsFeed";
-import RightSidebar from "../components/rightSidebar/rightSidebar";
+import RightSidebar from "../components/rightSidebar/RightSidebar";
 import { useNavigate, Navigate } from "react-router-dom";
 
 function Home() {
