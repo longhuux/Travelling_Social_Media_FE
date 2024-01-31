@@ -1,11 +1,33 @@
 import People from "@mui/icons-material/People";
-import { Button } from "@mui/material";
-import React from "react";
+import { Button, CircularProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchInProgressVacations } from "../../redux/slice/vacationSlice";
 
 function RightSidebar() {
+  const user = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+  const {inProgressVacations,loading,error}=useSelector((state)=>state.vacation)
+  const vacations = useSelector((state) => state.vacation.vacations);
+
+  useEffect(() => {
+    dispatch(fetchInProgressVacations())
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    dispatch(fetchInProgressVacations())
+  }, [vacations]);
+
+  if (loading === "loading") {
+    return (
+      <div className="w-[360px] h-screen pr-3 pt-1 flex justify-center items-center top-0 sticky">
+        <CircularProgress />
+      </div>
+    );
+  }
   return (
-    <div>
+    <>
       <div className="w-[360px] h-[1224px] pr-3 pt-1 flex-col justify-start items-center gap-4 inline-flex overflow-y-auto top-0 sticky">
         <div className="w-[348px] h-12 px-4 py-3 bg-gray-100 rounded-full justify-start items-start gap-4 inline-flex">
           <div className="w-6 h-6 relative" />
@@ -18,56 +40,38 @@ function RightSidebar() {
           <div className=" text-neutral-900 text-xl font-bold leading-normal">
             Your curent vacation
           </div>
-          <div className="bg-white w-full h-full rounded-2xl p-3">
-            <h1 className="text-sky-600 text-lg">Title of vacation</h1>
-            <div className="flex gap-x-1">
-              <People />
-              <p>2 members</p>
+          {inProgressVacations&&inProgressVacations.length > 0 ? (
+            <div className="w-full">
+              {inProgressVacations.map((vacation) => (
+                <div
+                  key={vacation._id}
+                  className="rounded-2xl bg-white p-3 mb-4"
+                >
+                  <h1 className="text-sky-600 text-lg">{vacation.title}</h1>
+                  <div className="flex gap-x-1">
+                    <People />
+                    <p>{vacation.participants.length} members</p>
+                  </div>
+                  <p className="">{vacation.desc}</p>
+                  <div className="flex justify-around mt-3">
+                    <Button
+                      className="w-[134px]"
+                      variant="outlined"
+                      color="error"
+                    >
+                      Finish
+                    </Button>
+                    <CreatePost vacationId={vacation._id}/>
+                  </div>
+                </div>
+              ))}
             </div>
-            <p className="">desc...</p>
-            <div className="flex justify-around mt-3">
-
-            <Button className="w-[134px]" variant="outlined" color="error">
-              Finish
-            </Button>
-            <CreatePost/>
-            </div>
-          </div>
+          ) : (
+            <p className="h-[80px] flex justify-center items-center text-slate-400">You don't have any vacation</p>
+          )}
         </div>
-        <div className="self-stretch h-[542px] px-4 py-[13px] bg-gray-50 rounded-2xl border border-gray-50 flex-col justify-start items-start gap-2.5 flex">
-          <div className="self-stretch h-[516px] flex-col justify-start items-start gap-6 flex">
-            <div className="self-stretch text-neutral-900 text-xl font-bold leading-normal">
-              Popular places
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-            <div className="self-stretch justify-start items-start gap-4 inline-flex">
-              <div className="grow shrink basis-0 flex-col justify-start items-start gap-[3px] inline-flex"></div>
-              <div className="w-[19px] h-[19px] relative" />
-            </div>
-          </div>
-        </div>
-
       </div>
-    </div>
+    </>
   );
 }
 

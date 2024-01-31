@@ -1,5 +1,12 @@
-import { Avatar, AvatarGroup, Grid, Typography } from "@mui/material";
-import React from "react";
+import {
+  Avatar,
+  AvatarGroup,
+  CircularProgress,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { AVATAR_URL } from "../../config";
 import PeopleIcon from "@mui/icons-material/People";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
@@ -13,32 +20,91 @@ import TimelineOppositeContent, {
   timelineOppositeContentClasses,
 } from "@mui/lab/TimelineOppositeContent";
 import TimelineItem, { timelineItemClasses } from "@mui/lab/TimelineItem";
-
+import { v4 as uuidv4 } from "uuid";
 import Test from "../feeds/Test";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVacationDetail } from "../../redux/slice/vacationSlice";
+import dayjs from "dayjs";
+import Post from "../feeds/Post";
+import KeyboardBackspace from "@mui/icons-material/KeyboardBackspace";
 
-function Vacation() {
+function Vacation(id) {
+  const dispatch = useDispatch();
+  const [vacationDetail, setVacationDetail] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchVacationDetail(id.id))
+      .then((response) => {
+        setVacationDetail(response.payload);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [dispatch, id]);
+
+  if (!vacationDetail) {
+    return (
+      <div className="w-[643px] h-screen flex justify-center items-center">
+        <CircularProgress />
+      </div>
+    );
+  }
+  const getModules = () => {
+    return vacationDetail.milestones.map((milestone) => {
+      return (
+        <TimelineItem key={milestone._id}>
+          <TimelineSeparator>
+            <TimelineDot color="success" />
+            <TimelineConnector sx={{ bgcolor: "success.main" }} />
+          </TimelineSeparator>
+          <TimelineContent sx={{ py: "1px", px: 2 }}>
+            <Typography className="flex" color="success.main" variant="h6" component="span">
+              {dayjs(milestone.time).format("LL")} &#x2022; 
+              <p className="text-slate-500 ml-1 ">{milestone.desc}</p>
+            </Typography>
+            <ul>
+              {milestone.posts.map((post) => {
+                return(
+                  <li className="list-none mt-3" key={uuidv4()}>
+                    <Post post={post} />
+                  </li>
+                );
+              })}
+            </ul>
+          </TimelineContent>
+        </TimelineItem>
+      );
+    });
+  };
   return (
     <>
-      <div className="w-[643px] px-3 h-full flex-col justify-start items-start inline-flex overflow-y-auto scroll-smooth">
-        <div className="w-full border-b mb-3 pb-3 flex flex-col justify-center items-center self-center">
-          <h1 className="f font-bold text-2xl text-blue">Title of the vacation...</h1>
-          <Avatar sx={{ width: 60, height: 60 }}>
-            <img src={AVATAR_URL} alt="username" />
-          </Avatar>
-          <p>username</p>
+      <div className="w-[643px] px-3 pt-16 h-full flex-col justify-start items-start inline-flex overflow-y-auto scroll-smooth">
+      <section className='z-50 w-[630px] px-3 flex items-center fixed top-0 bg-white bg-opacity-90 border-b'>
+        <KeyboardBackspace
+          className="cursor-pointer"
+          onClick={() => history.back()}
+          />
+        <h1 className="py-3 text-xl font-bold opacity-80 ml-5">Vacation</h1>
+      </section>
+        <div className="w-full border-b mb-3 pb-17 flex flex-col justify-center items-center self-center">
+          <h1 className="f font-bold text-2xl text-blue">
+            {vacationDetail.title}
+          </h1>
+          <Avatar
+            src={`${vacationDetail?.createdBy.avatar}`}
+            sx={{ width: 60, height: 60 }}
+          ></Avatar>
+
+          <p>{vacationDetail.createdBy.fullName}</p>
           <div className="flex items-center">
             <PeopleIcon fontSize="large" color="primary" />
-            <p className="mx-2">5 members</p>
+            <p className="mx-2">{vacationDetail.participants.length} members</p>
             <AvatarGroup max={10} className="justify-self-end">
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-              <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-              <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-              <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
+              {vacationDetail.participants.map((user) => (
+                <Tooltip title={`${user.fullName}`} key={user._id}>
+                  <Avatar src={user.avatar} />
+                </Tooltip>
+              ))}
             </AvatarGroup>
           </div>
           <div className="flex items-center w-full">
@@ -49,15 +115,16 @@ function Vacation() {
             />
             <Grid container spacing={2} columns={16}>
               <Grid item xs={8}>
-                <p>Start:</p>
+                <p>Start: {dayjs(vacationDetail.startedAt).format("LL")}</p>
               </Grid>
               <Grid item xs={8}>
-                <p>End:</p>
+                <p>End: {dayjs(vacationDetail.endedAt).format("LL")}</p>
               </Grid>
             </Grid>
           </div>
         </div>
         <Timeline
+          className="w-full"
           sx={{
             [`& .${timelineItemClasses.root}:before`]: {
               flex: 0,
@@ -65,19 +132,7 @@ function Vacation() {
             },
           }}
         >
-          <TimelineItem>
-            <TimelineSeparator>
-              <TimelineDot color="success" />
-              <TimelineConnector sx={{ bgcolor:"success.main" }} />
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "1px", px: 2 }}>
-              <Typography variant="h6" component="span">
-                milestone
-              </Typography>
-              <Typography>Because it&apos;s awesome!</Typography>
-              <Test />
-            </TimelineContent>
-          </TimelineItem>
+          {getModules()}
         </Timeline>
       </div>
     </>

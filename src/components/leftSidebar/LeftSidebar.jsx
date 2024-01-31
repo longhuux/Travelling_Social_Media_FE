@@ -16,6 +16,8 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
+import { Avatar } from "@mui/material";
+import { CLOUDINARY_URL } from "../../config";
 
 function LeftSidebar() {
   const user = useSelector((state) => state.users);
@@ -57,18 +59,16 @@ function LeftSidebar() {
         </div>
         <div className="self-stretch h-[602px] flex-col justify-start items-start gap-[38px] flex">
           <div className="px-3 flex-col justify-start items-start gap-8 flex">
-            <Link to="/">
-              <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer">
-                <div className="w-[26px] h-[26px] relative">
-                  <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" />
-                  <HomeRoundedIcon />
-                </div>
-                <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
-                  Home
-                </div>
+            <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer py-2  hover:bg-slate-100 hover:rounded-full hover:p-2">
+              <div className="w-[26px] h-[26px] relative">
+                {/* <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" /> */}
+                <HomeRoundedIcon />
               </div>
-            </Link>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+              <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
+                <Link to="/">Home</Link>
+              </div>
+            </div>
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <SearchIcon />
               </div>
@@ -76,7 +76,7 @@ function LeftSidebar() {
                 Explore
               </div>
             </div>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer  py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <NotificationsIcon />
               </div>
@@ -84,7 +84,7 @@ function LeftSidebar() {
                 Notifications
               </div>
             </div>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <MessageIcon />
               </div>
@@ -92,7 +92,7 @@ function LeftSidebar() {
                 Messages
               </div>
             </div>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <BookmarkIcon />
               </div>
@@ -100,17 +100,21 @@ function LeftSidebar() {
                 Bookmarks
               </div>
             </div>
-            <Link to={`/profile/${user.user._id}`}>
-              <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
-                <div className="w-[26px] h-[26px] relative">
-                  <PersonIcon />
-                </div>
-                <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
-                  Profile
-                </div>
+            {/* <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+              <div className="w-[26px] h-[26px] relative" />
+              <div className="w-[43px] text-neutral-900 text-xl font-normal leading-normal">
+                Lists
               </div>
-            </Link>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer">
+            </div> */}
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
+              <div className="w-[26px] h-[26px] relative">
+                <PersonIcon />
+              </div>
+              <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
+                <Link to="/profile/:id">Profile</Link>
+              </div>
+            </div>
+            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <MoreHorizIcon />
               </div>
@@ -125,7 +129,7 @@ function LeftSidebar() {
           <div className="grow shrink basis-0 h-[90px] py-6 justify-start items-center gap-4 flex">
             <div className="w-10 h-10 rounded-[500px] justify-center items-center flex">
               <div className="w-10 h-10 justify-center items-center inline-flex">
-                <AccountCircleTwoToneIcon fontSize="large" />
+                <Avatar src={`${process.env.CLOUDINARY_URL}/${user.user.avatar}`} />
               </div>
             </div>
             <div className="grow shrink basis-0 flex-col justify-start items-start gap-0.5 inline-flex">

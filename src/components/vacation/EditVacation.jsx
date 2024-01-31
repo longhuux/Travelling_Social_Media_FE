@@ -24,6 +24,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers } from "../../redux/slice/userSlice";
 import { createVacation } from "../../redux/slice/vacationSlice";
+import { v4 as uuidv4 } from "uuid";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
@@ -33,6 +34,7 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import TimelineOppositeContent, {
   timelineOppositeContentClasses,
 } from "@mui/lab/TimelineOppositeContent";
+import { Edit } from "@mui/icons-material";
 
 LicenseInfo.setLicenseKey(
   "e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y"
@@ -52,17 +54,17 @@ const style = {
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function BasicModal() {
+export default function EditVacation(vacation) {
   const dispatch = useDispatch();
   const { users, status, error } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
-  const [milestones, setMilestones] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("public");
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [userTags, setUseTags] = useState([]);
+  const [milestones, setMilestones] = useState([...vacation.vacation.milestones]);
+  const [selectedOption, setSelectedOption] = useState(vacation.vacation.privacy);
+  const [title, setTitle] = useState(vacation.vacation.title);
+  const [desc, setDesc] = useState(vacation.vacation.desc);
+  const [userTags, setUseTags] = useState([...vacation.vacation.participants]);
   const [allowedUsers, setAllowedUsers] = useState([]);
-  const [estimatedTime, setEstimatedTime] = useState([dayjs(), dayjs()]);
+  const [estimatedTime, setEstimatedTime] = useState([dayjs(vacation.vacation.startedAt), dayjs(vacation.vacation.endedAt)]);
   const [milestonesDesc, setMilestonesDesc] = useState();
   const [milestonesDate, setMilestonesDate] = useState(dayjs());
   const [sortedMilestones, setSortedMilestones] = useState([]);
@@ -146,13 +148,14 @@ export default function BasicModal() {
       console.error("Error:", error.message);
     }
   };
+  console.log(userTags)
 
   const getModules = () => {
     return sortedMilestones.map((milestone, index) => {
       return (
-        <TimelineItem key={milestone.key}>
+        <TimelineItem key={uuidv4()}>
           <TimelineOppositeContent color="textSecondary">
-            {milestone.time}
+            {dayjs(milestone.time).format("LL")}
           </TimelineOppositeContent>
           <TimelineSeparator>
             <TimelineDot />
@@ -168,9 +171,9 @@ export default function BasicModal() {
     <>
       <Button
         onClick={handleOpen}
-        className="w-full !bg-blue-500 !rounded-full !text-white"
+        startIcon={<Edit/>}
       >
-        Start a trip
+        Edit
       </Button>
       <Modal
         open={open}
@@ -201,7 +204,7 @@ export default function BasicModal() {
               size="small"
               limitTags={2}
               id="multiple-limit-tags"
-              onChange={(event, value) => setAllowedUsers(value)}
+              onChange={(event, value) => setAllowedUsers(...value)}
               options={users}
               getOptionLabel={(option) => option.userName}
               renderInput={(params) => (
@@ -238,8 +241,9 @@ export default function BasicModal() {
               multiple
               id="checkboxes-tags-demo"
               options={users}
+              value={userTags}
+            //   defaultValue={vacation.vacation.participants}
               disableCloseOnSelect
-              //   onChange={handleUserTagsChange}
               onChange={(event, value) => setUseTags(value)}
               getOptionLabel={(option) => option.userName}
               renderOption={(props, option, { selected }) => (

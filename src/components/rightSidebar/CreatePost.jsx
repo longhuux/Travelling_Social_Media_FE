@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import PostForm from '../feeds/PostForm';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const style = {
   position: 'absolute',
@@ -17,10 +19,26 @@ const style = {
   p: 4,
 };
 
-export default function CreatePost() {
+export default function CreatePost(prop) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [vacation, setVacation] = React.useState()
+  const fetchData = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/vacation/detail/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+  };
+  useEffect(() => {
+    const id = prop.vacationId;
+    fetchData(id)
+      .then(data => setVacation(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
   return (
     <div>
@@ -35,7 +53,7 @@ export default function CreatePost() {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Create a new post
           </Typography>
-            <PostForm/>
+            <PostForm vacation={vacation}/>
         </Box>
       </Modal>
     </div>

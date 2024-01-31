@@ -16,23 +16,25 @@ function NewsFeed() {
   const error = useSelector((state) => state.vacation.error);
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
+  const token = localStorage.getItem("token");
 
   const fetchData = async (__page) => {
     console.log(__page);
     const response = await axios.get(
-      `http://localhost:8000/vacation/get-all-vacations?pageSize=${5}&pageIndex=${page}`
+      `${process.env.API_URL}vacation/get-all-vacations?pageSize=${5}&pageIndex=${page}`,{
+        headers:{Authorization:`Bearer ${token}`}
+      }
     );
-    console.log(response.data.data)
+    // console.log(response.data.data)
     setItems([...items, ...response.data.data]);
     setPage(page + 1);
   };
 
   useEffect(() => {
-    if (status === "idle") {
-      // dispatch(fetchVacations({ pageSize: 5, pageIndex: 1 }));
-      // dispatch(createVacation());
-    }
-  }, [dispatch, status]);
+      setItems([])
+      setPage(1)
+      fetchData(1);
+  }, [vacations]);
 
   if (status === "loading") {
     return (
@@ -41,34 +43,30 @@ function NewsFeed() {
       </div>
     );
   }
-
-  if (status === "failed") {
-    return <div>Error: {error}</div>;
-  }
-
   return (
-    <div>
-      <div className="w-[643px] flex-col justify-start items-start inline-flex overflow-y-auto scroll-smooth">
+    <> 
+      <div className="w-[643px] h-full px-3 justify-start items-start inline-flex overflow-y-auto scroll-smooth">
         {/* {vacations.map((vacation) => {
           return <VacationFeeds key={vacation._id} vacation={vacation} />;
         })} */}
         <InfiniteScroll
+        className="!w-full"
           style={{ margin: "10px" }}
           pageStart={0}
           loadMore={fetchData}
           hasMore={true}
           loader={
-            <div className="loader flex justify-center !w-[600px] mt-6" key={0}>
-        <CircularProgress className="flex justify-center" />
+            <div className="loader flex justify-center !w-full mt-6" key={0}>
+              <CircularProgress className="flex justify-center" />
             </div>
           }
         >
-          {items.map((item) => (
-             <VacationFeeds key={item._id} vacation={item} />
+          {vacations&&items.map((vacation) => (
+            <VacationFeeds key={vacation._id} vacation={vacation} />
           ))}
         </InfiniteScroll>
       </div>
-    </div>
+    </>
   );
 }
 

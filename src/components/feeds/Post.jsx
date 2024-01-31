@@ -1,117 +1,134 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import {
+  Avatar,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Link,
+  TextField,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPostDetail, toggleLike } from "../../redux/slice/postSlice";
+import MediaDisplay from "./MediaDisplay";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ModeCommentOutlinedIcon from "@mui/icons-material/ModeCommentOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { fetchVacationDetail } from "../../redux/slice/vacationSlice";
+import InputAdornment from "@mui/material/InputAdornment";
+import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useNavigate } from "react-router-dom";
+import { CLOUDINARY_URL } from "../../config";
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
 
-export default function Post() {
-  const [expanded, setExpanded] = React.useState(false);
+const Post = (props) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.users);
+  const [isLiked, setIsLiked] = useState(
+    props.post.likes.uId.includes(user.user._id)
+  );
+  const [usable, setUsable] = useState(true);
+  const [number, setNumber] = useState(0);
+  const navigate = useNavigate();
+  dayjs.extend(relativeTime);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const handleToggleLike = () => {
+    const postId = props.post._id;
+    const userId = { userId: user.user._id };
+    dispatch(toggleLike({ postId, ...userId }));
+    setIsLiked(!isLiked);
+    setUsable(false);
   };
 
+  useEffect(() => {
+    if (isLiked === true) {
+      setNumber(1);
+    } else {
+      setNumber(0);
+    }
+  }, [isLiked]);
   return (
-    <Card sx={{ maxWidth: 598 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            L
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="longhuux"
-        subheader="a trip name"
-      />
-      <CardMedia
-        className='rounded-lg p-6'
-        component="img"
-        height="194"
-        image="https://livetraffic.eu/wp-content/uploads/placeholder-300x300.png"
-        alt="Paella dish"
-      />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteBorderIcon />
-          <p>123</p>
-        </IconButton>
-        <IconButton aria-label="share">
-          <ModeCommentOutlinedIcon />
-          <p>123</p>
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
+    <>
+      <div className="w-[570px] border rounded-xl p-5 hover:bg-slate-100">
+        <div className="flex gap-x-2 mb-3 items-center">
+          <Avatar src={`${CLOUDINARY_URL}/${props.post.postBy.avatar}`} />
+          <div className="flex w-full justify-between">
+            <div className="flex flex-col gap-x-2">
+              {props.post.postBy && (
+                <h1 className="font-bold">{props.post.postBy.fullName}</h1>
+              )}
+              {props.post.postBy && (
+                <h3 className="text-slate-500">
+                  @{props.post.postBy.userName}
+                </h3>
+              )}{" "}
+            </div>
+            <p className="text-slate-500">&#x2022; posted {dayjs(props.post.createdAt).fromNow()}</p>
+          </div>
+        </div>
+        <p>{props.post.content}</p>
+        {props.post.images && (
+          <MediaDisplay src={props.post.images} postId={props.post._id} />
+        )}
+        <div className="p-2 border-t border-b m-3">
+          <Grid container spacing={2} columns={16}>
+            <Grid
+              className="flex justify-center items-center gap-x-2"
+              item
+              xs={8}
+            >
+              <IconButton onClick={handleToggleLike} size="large">
+                {isLiked ? (
+                  <FavoriteIcon color="warning" />
+                ) : (
+                  <FavoriteBorderIcon />
+                )}
+              </IconButton>
+              {usable ? (
+                <h1>{props.post.likes.total}</h1>
+              ) : (
+                <h1>{props.post.likes.total + number}</h1>
+              )}
+            </Grid>
+            <Grid
+              className="flex justify-center items-center gap-x-2"
+              item
+              xs={8}
+            >
+              <IconButton size="large">
+                <ModeCommentOutlinedIcon />
+              </IconButton>
+              {props.post.comments && <h1>{props.post.comments.length}</h1>}{" "}
+            </Grid>
+          </Grid>
+        </div>
+        <div className="flex flex-col">
+          <Link onClick={()=>navigate(`/post/${props.post._id}`)} className="cursor-pointer">See comments</Link>
+          <div className="flex gap-x-4 mt-2 items-center">
+            <Avatar src={`${CLOUDINARY_URL}/${user?.user.avatar}`} />
+            <TextField
+              className="w-full"
+              InputProps={{
+                style: {
+                  borderRadius: "12px",
+                },
+                endAdornment: (
+                  <InputAdornment className="cursor-pointer" position="end">
+                    <SendIcon color="primary" />
+                  </InputAdornment>
+                ),
+              }}
+              multiline
+              label="Write a comment..."
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
-}
+};
+
+export default Post;

@@ -2,32 +2,70 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchVacations = createAsyncThunk(
-  "vacations/fetchVacations",
+  "vacation/fetchVacations",
   async ({ pageSize, pageIndex }) => {
     const response = await axios.get(
-      `http://localhost:8000/vacation/get-all-vacations?pageSize=${pageSize}&pageIndex=${pageIndex}`
+      `${process.env.API_URL}vacation/get-all-vacations?pageSize=${pageSize}&pageIndex=${pageIndex}`,
+      {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      }
+    );
+    return response.data.data;
+  }
+);
+export const createVacation = createAsyncThunk(
+  "vacation/createVacation",
+  async ({ vacationData, userId }) => {
+    const response = await axios.post(
+      `${process.env.API_URL}vacation/create/`,
+      vacationData,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
     );
     return response.data.data;
   }
 );
 
-export const createVacation = createAsyncThunk(
-  "vacation/createVacation",
-  async (vacationData) => {
-    const response = await axios.post(
-      "http://localhost:8000/vacation/create/658839433bd62f956a2f0876",
-      vacationData
+export const fetchVacationDetail = createAsyncThunk(
+  "vacation/fetchDetail",
+  async (id) => {
+    const response = await axios.get(
+      `${process.env.API_URL}vacation/detail/${id}`,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
     );
     return response.data.data;
   }
 );
+
+export const fetchInProgressVacations = createAsyncThunk(
+  "vacation/fetchInProgress",
+  async () => {
+    const response = await axios.get(
+      `${process.env.API_URL}vacation/in-progess/`,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data.data;
+  }
+);
+
 const vacationSlice = createSlice({
   name: "vacation",
   initialState: {
     vacations: [],
+    inProgressVacations: [],
     status: "idle",
-    error: null,
-    pageIndex: 1,
+    error: null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -43,32 +81,48 @@ const vacationSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(fetchVacations.pending, (state) => {
+      // .addCase(fetchVacations.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(fetchVacations.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   state.vacations = [...state.vacations, ...action.payload];
+      // })
+      // .addCase(fetchVacations.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // })
+      .addCase(fetchVacations.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.vacations = [...state.vacations, ...action.payload];
+        state.currentPage += 1;
+        state.hasMore = state.currentPage < state.totalPages;
+      })
+      .addCase(fetchVacationDetail.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchVacations.fulfilled, (state, action) => {
+      .addCase(fetchVacationDetail.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const tempArrayObj = {};
-        const tempArray = [];
-        // state.vacations = action.payload;
-        [...state.vacations, ...action.payload].forEach((item) => {
-          tempArrayObj[item._id] = item;
-        });
-        for (const key in tempArrayObj) {
-          const element = tempArrayObj[key];
-          tempArray.push(element);
+        if (state.detail !== action.payload) {
+          state.detail = action.payload;
         }
-        state.vacations = [...tempArray];
-        // state.vacations = [...state.vacations, ...action.payload];
-        // state.vacations.sort(
-        //   (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        // );
-        state.pageIndex += 1;
+        
       })
-      .addCase(fetchVacations.rejected, (state, action) => {
+      .addCase(fetchVacationDetail.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+      .addCase(fetchInProgressVacations.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchInProgressVacations.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.inProgressVacations = action.payload;
+      })
+      .addCase(fetchInProgressVacations.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
   },
 });
 
