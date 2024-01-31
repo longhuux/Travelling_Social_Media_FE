@@ -4,7 +4,6 @@ import usersReducer from "../slice/userSlice";
 import vacationReducer from "../slice/vacationSlice";
 import postReducer from "../slice/postSlice";
 
-
 export const store = configureStore({
   reducer: {
     users: userReducer,

@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -17,6 +15,7 @@ import { register } from "../services/User";
 import { useDispatch } from "react-redux";
 import { registerSuccess } from "../redux/slice/user.slice";
 import { useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
 
 function Copyright(props) {
   return (
@@ -41,10 +40,13 @@ const defaultTheme = createTheme();
 export default function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
+  const [showAlert, setShowAlert] = React.useState(false);
+
   const handleSubmit = async (event) => {
     try {
       event.preventDefault();
+      setShowAlert(false);
       const data = new FormData(event.currentTarget);
       // console.log({
       //   fullName: data.get("fullName"),
@@ -58,15 +60,17 @@ export default function SignUp() {
         data.get("userName"),
         data.get("password")
       );
-      console.log(user.data);
+      // console.log(user.data);
       const token = user.data.token;
 
       if (token) {
         dispatch(registerSuccess(user.data));
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user.data));
         navigate("/", { replace: true });
+      } else {
+        setShowAlert(true);
       }
-      dispatch(registerSuccess(user));
     } catch (error) {
       console.log(error);
     }
@@ -98,27 +102,6 @@ export default function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -160,15 +143,20 @@ export default function SignUp() {
                   autoComplete="password"
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid> */}
             </Grid>
+            {showAlert && (
+                <Alert variant="filled" severity="error" sx={{
+                position: "fixed",
+                bottom: theme => theme.spacing(2),
+                left: theme => theme.spacing(2),
+                backgroundColor: theme => theme.palette.error.main,
+                color: theme => theme.palette.error.contrastText,
+                padding: theme => theme.spacing(1),
+                borderRadius: theme => theme.shape.borderRadius,
+              }}>
+                  Email or UserName have been used
+                </Alert>
+              )}
             <Button
               type="submit"
               fullWidth
