@@ -11,7 +11,7 @@ import logo from "../.././assets/xjourney.png";
 import CreateJourney from "./CreateJourney";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { loginSuccess } from "../../redux/slice/user.slice";
+import { loginSuccess, registerSuccess } from "../../redux/slice/user.slice";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -22,12 +22,11 @@ function LeftSidebar() {
   // console.log(user);
   const dispatch = useDispatch();
 
-  
-
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       dispatch(loginSuccess(JSON.parse(savedUser)));
+      dispatch(registerSuccess(JSON.parse(savedUser)));
     }
   }, [dispatch]);
 

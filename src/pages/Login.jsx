@@ -70,7 +70,7 @@ export default function SignInSide() {
       //   password: data.get("password"),
       // });
       const user = await login(data.get("email"), data.get("password"));
-      console.log(user.data);
+      // console.log(user.data);
       const { token } = user.data;
 
       if (token) {
@@ -178,7 +178,6 @@ export default function SignInSide() {
                   Email or Password not found
                 </Alert>
               )}
-
               <Button
                 type="submit"
                 fullWidth
