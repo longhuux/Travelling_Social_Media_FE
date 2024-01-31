@@ -2,26 +2,18 @@ import React, { useState } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button } from "@mui/material";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import TransgenderIcon from "@mui/icons-material/Transgender";
 import { useSelector } from "react-redux";
-import profileicon from "../../img/profileicon.png";
-import background from "../../img/background.jpg";
 import tichxanh from "../../img/tichxanh.png";
 import EditProfileModal from "./EditProfiles";
-
+import dayjs from "dayjs";
+import Item from "./Item";
 
 const Profiles = () => {
   const user = useSelector((state) => state.users);
 
-  const [tabValue, setTabValue] = useState("1");
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-
-  
 
   const navigate = useNavigate();
 
@@ -41,15 +33,6 @@ const Profiles = () => {
     setIsEditProfileOpen(false);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-    if (newValue === 3) {
-      console.log("likes");
-    } else if (newValue === 1) {
-      console.log("posts");
-    }
-  };
-
   return (
     <div>
       <section className={`z-50 flex items-center sticky top-0 bg-white`}>
@@ -65,9 +48,9 @@ const Profiles = () => {
       <section>
         <img
           className="w-[100%] h-[15rem] object-cover"
-          src={background}
+          src={`https://res.cloudinary.com/dmonbjexk/image/upload/f_auto,q_auto/${user.user.cover}`}
           alt=""
-        />
+        ></img>
       </section>
 
       <section className="pl-6">
@@ -75,7 +58,7 @@ const Profiles = () => {
           <Avatar
             className="transform -translate-y-24"
             alt=""
-            src={profileicon}
+            src={`https://res.cloudinary.com/dmonbjexk/image/upload/f_auto,q_auto/${user.user.avatar}`}
             sx={{ width: "10rem", height: "10rem", border: "4px solid white" }}
           />
           {true ? (
@@ -95,20 +78,20 @@ const Profiles = () => {
               {true ? "Follow" : "UnFollow"}
             </Button>
           )}
-          <EditProfileModal open={isEditProfileOpen} handleClose={handleCloseProfileModel} user={user} />
+          {isEditProfileOpen && (
+            <EditProfileModal
+              open={isEditProfileOpen}
+              handleClose={handleCloseProfileModel}
+              user={user}
+            />
+          )}
         </div>
         <div>
           <div className="flex items-center">
             <h1 className="font-bold text-lg"> {user.user.fullName}</h1>
-            {true && (
-              <img
-                className="ml-2 w-5 h-5"
-                src={tichxanh}
-                alt=""
-              />
-            )}
+            {true && <img className="ml-2 w-5 h-5" src={tichxanh} alt="" />}
           </div>
-          <h1 className="text-gray-500">@{user.user.userName}</h1>
+          <h1 className="text-gray-500">@ {user.user.userName}</h1>
         </div>
         <div className="mt-2 space-y-3">
           <p>
@@ -118,7 +101,16 @@ const Profiles = () => {
           <div className="py-1 flex space-x-5">
             <div className="flex items-center text-gray-500">
               <CalendarMonthIcon />
-              <p className="ml-2">Date of Birth: </p>
+              <p className="ml-2">
+                Date of Birth: {dayjs(user.user.dateOfBirth).format("LL")}{" "}
+              </p>
+            </div>
+            <div className="flex items-center text-gray-500">
+              <p className="ml-2"> Age: {user.user.age} </p>
+            </div>
+            <div className="flex items-center text-gray-500">
+              <TransgenderIcon />
+              <p className="ml-2"> Gender: {user.user.gender} </p>
             </div>
           </div>
           <div className="flex items-center space-x-5">
@@ -134,23 +126,7 @@ const Profiles = () => {
         </div>
       </section>
       <section className="py-5">
-        <Box sx={{ width: "100%", typography: "body1" }}>
-          <TabContext value={tabValue}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                onChange={handleTabChange}
-                aria-label="lab API tabs example"
-              >
-                <Tab label="Posts" value="1" />
-                <Tab label="Albums" value="2" />
-                <Tab label="Likes" value="3" />
-              </TabList>
-            </Box>
-            <TabPanel value="1">Item One</TabPanel>
-            <TabPanel value="2">Item Two</TabPanel>
-            <TabPanel value="3">Item Three</TabPanel>
-          </TabContext>
-        </Box>
+        <Item />
       </section>
     </div>
   );

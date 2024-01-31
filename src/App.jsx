@@ -11,7 +11,6 @@ import ForgetPass from "./pages/Forgetpass";
 import VacationDetails from "./pages/VacationDetails";
 import Profile from "./pages/Profile";
 
-
 function App() {
   return (
     <>

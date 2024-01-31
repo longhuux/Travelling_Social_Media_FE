@@ -29,10 +29,21 @@ export const changepass = (oldPassword, newPassword, userId) => {
 };
 
 export const updateProfile = (data, userId) => {
-  console.log(data);
   return axiosInstance.put(`/api/v1/user/profile/update/${userId}`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 };
+
+export const getUser = (data) => {
+  return axiosInstance.get("/api/v1/user/get_user", {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  });
+};
+
+export const getVacationOnPageUser = (userId) =>{
+  return axiosInstance.get(`vacation/${userId}`);
+}
