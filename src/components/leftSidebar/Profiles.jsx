@@ -19,7 +19,7 @@ const Profiles = () => {
 
   const navigate = useNavigate();
 
-  const handleBack = () => navigate("/home");
+  const handleBack = () => navigate("/");
 
   const handleOpenProfileModel = () => {
     console.log("openprofile");

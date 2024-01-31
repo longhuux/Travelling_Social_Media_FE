@@ -60,7 +60,7 @@ export default function SignInSide() {
         dispatch(loginSuccess(userWithoutPassword));
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(userWithoutPassword));
-        navigate("/home", { replace: true });
+        navigate("/", { replace: true });
       }
     } catch (error) {
       console.log(error);

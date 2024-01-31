@@ -64,7 +64,7 @@ export default function SignUp() {
       if (token) {
         dispatch(registerSuccess(user.data));
         localStorage.setItem("token", token);
-        navigate("/home", { replace: true });
+        navigate("/", { replace: true });
       }
       dispatch(registerSuccess(user));
     } catch (error) {

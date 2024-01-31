@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { IconButton, TextField } from "@mui/material";
+import { Alert, IconButton, TextField } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import Button from "@mui/material/Button";
@@ -16,8 +16,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import RemoveCircleTwoToneIcon from "@mui/icons-material/RemoveCircleTwoTone";
 import axios from "axios";
+import dayjs from "dayjs";
 
-function PostForm() {
+function PostForm(vacation) {
   const [media, setMedia] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -65,19 +66,23 @@ function PostForm() {
 
   const handleSubmit = async () => {
     const formData = new FormData();
-    formData.append("vacation")
-    formData.append("milestone", "658ad938b7932886de4ba079");
+    formData.append("vacation", vacation.vacation._id);
+    formData.append("milestone", milestone);
     formData.append("content", content);
     if (selectedFile) {
       formData.append("images", selectedFile);
     }
     const apiUrl =
-      "http://localhost:8000/post/create-post/658d822c0dd01b0d2200bf5b";
+      `${process.env.API_URL}post/create-post/`;
 
     try {
-      const response = await axios.post(apiUrl,formData)
-      console.log(response)
-      if (response.statusText==="OK") {
+      const response = await axios.post(apiUrl, formData,{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+      console.log(response);
+      if (response.statusText === "OK") {
         console.log("Data successfully sent to the API");
       } else {
         console.error("Failed to send data to the API");
@@ -89,7 +94,7 @@ function PostForm() {
 
   return (
     <>
-      <div className="flex border w-full h-auto mt-2 rounded-lg">
+      <div className="flex w-full h-auto mt-2">
         <div className="flex flex-col w-full p-3 ">
           <div className="flex my-3 content-center items-center ">
             <h2 className="mr-4">Milestone: </h2>
@@ -104,9 +109,11 @@ function PostForm() {
                     label="Select"
                     onChange={handleMilestoneChange}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {vacation.vacation.milestones.map((item) => (
+                      <MenuItem value={item._id}>
+                        {dayjs(`${item.time}`).format("LL")}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
                 <h2>or create new</h2>
@@ -150,6 +157,7 @@ function PostForm() {
             variant="standard"
             value={content}
             onChange={handleContentChange}
+            autoFocus={true}
           />
           {preview && (
             <div>
@@ -203,6 +211,7 @@ function PostForm() {
               className="!rounded-full"
               variant="contained"
               onClick={handleSubmit}
+              type="submit"
             >
               Post
             </Button>

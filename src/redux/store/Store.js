@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "../slice/user.slice";
-import usersReducer from '../slice/userSlice';
-import vacationReducer from '../slice/vacationSlice'
+import usersReducer from "../slice/userSlice";
+import vacationReducer from "../slice/vacationSlice";
+import postReducer from "../slice/postSlice";
 
 
 export const store = configureStore({
@@ -9,5 +10,6 @@ export const store = configureStore({
     users: userReducer,
     user: usersReducer,
     vacation: vacationReducer,
-  },
+    post: postReducer,
+  }
 });

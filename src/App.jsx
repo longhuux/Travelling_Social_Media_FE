@@ -1,5 +1,4 @@
-import { useState } from "react";
-import viteLogo from "/vite.svg";
+
 import "./App.css";
 import SignInSide from "./pages/Login";
 import SignUp from "./pages/Signup";
@@ -10,13 +9,15 @@ import SignIn from "./pages/Changepass";
 import ForgetPass from "./pages/Forgetpass";
 import VacationDetails from "./pages/VacationDetails";
 import Profile from "./pages/Profile";
+import PostPage from "./pages/PostPage";
+import { CLOUDINARY_URL } from "./config";
 
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="" element={<Home />} />
         <Route path="/sign-in" element={<SignInSide />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/test" element={<PostForm />} />
@@ -24,6 +25,7 @@ function App() {
         <Route path="/forgetpass" element={<ForgetPass />} />
         <Route path="/vacation/:id" element={<VacationDetails />} />
         <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/post/:id" element={<PostPage/>}/>
       </Routes>
     </>
   );

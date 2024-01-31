@@ -13,6 +13,8 @@ function Home() {
     console.log(token);
     return <Navigate to = "/sign-in"></Navigate>;
   }
+
+  console.log(token)
   
 
   return (
