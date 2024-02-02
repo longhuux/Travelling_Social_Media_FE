@@ -92,7 +92,6 @@ const EditProfileModal = ({ open, handleClose, user }) => {
           <label htmlFor="cover">
             <IconButton color="primary" component="span">
               <CameraAltIcon />
-              _Cover
             </IconButton>
           </label>
         </div>
@@ -124,7 +123,6 @@ const EditProfileModal = ({ open, handleClose, user }) => {
               style={{ padding: "5px" }}
             >
               <CameraAltIcon fontSize="small" />
-              _Avatar
             </IconButton>
           </label>
         </div>
@@ -147,20 +145,34 @@ const EditProfileModal = ({ open, handleClose, user }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={["DatePicker"]}>
             <DatePicker
-              label="Basic date picker"
+              label="Date of Birth"
               value={dateOfBirth}
               slotProps={{ textField: { fullWidth: true } }}
               onChange={(newValue) => setDateOfBirth(newValue)}
             />
           </DemoContainer>
         </LocalizationProvider>
-        <TextField
+        {/* <TextField
           margin="dense"
           label="Gender"
           fullWidth
           value={gender}
           onChange={(e) => setGender(e.target.value)}
-        /> 
+        />  */}
+        <br />
+        <FormControl fullWidth>
+          <InputLabel id="gender-label">Gender</InputLabel>
+          <Select
+            labelId="gender-label"
+            id="gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            label="Gender"
+          >
+            <MenuItem value="male">Male</MenuItem>
+            <MenuItem value="female">Female</MenuItem>
+          </Select>
+        </FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

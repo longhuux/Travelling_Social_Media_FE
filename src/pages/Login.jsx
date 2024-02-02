@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import Loading from "./Loading";
 
-
 function Copyright(props) {
   return (
     <Typography
@@ -49,7 +48,6 @@ export default function SignInSide() {
   const [showAlert, setShowAlert] = React.useState(false);
 
   const [loading, setLoading] = useState(true);
-  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -114,7 +112,9 @@ export default function SignInSide() {
             backgroundPosition: "center",
           }}
         >
-        <div className="absolute w-7/12 ml-4 top-1/4 text-white font-extrabold text-8xl drop-shadow-[0_35px_35px_rgba(0,0,0,2)] font-mono">Share your trip to everyone!</div>
+          <div className="absolute w-7/12 ml-4 top-1/4 text-white font-extrabold text-8xl drop-shadow-[0_35px_35px_rgba(0,0,0,2)] font-mono">
+            Share your trip to everyone!
+          </div>
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
@@ -197,7 +197,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/sign-up" variant="body2">
+                  <Link to="/sign-up" style={{ color: "blue" }} variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
