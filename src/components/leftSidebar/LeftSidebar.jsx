@@ -60,15 +60,17 @@ function LeftSidebar(props) {
         </div>
         <div className="self-stretch h-[602px] flex-col justify-start items-start gap-[38px] flex">
           <div className="px-3 flex-col justify-start items-start gap-8 flex">
+          <Link to="/">
             <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer py-2  hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 {/* <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" /> */}
                 <HomeRoundedIcon />
               </div>
               <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
-                <Link to="/">Home</Link>
+                Home
               </div>
             </div>
+            </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <SearchIcon />
@@ -107,14 +109,16 @@ function LeftSidebar(props) {
                 Lists
               </div>
             </div> */}
+            <Link to={`/profile/${user.user._id}`}>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <PersonIcon />
               </div>
               <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
-                <Link to={`/profile/${user.user._id}`}>Profile</Link>
+                Profile
               </div>
             </div>
+            </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
                 <MoreHorizIcon />
