@@ -216,7 +216,7 @@ function VacationFeeds(vacation) {
               <Grid item>
                 <Tooltip title="Comment">
                   <ChatBubbleIcon className="mr-1" color="primary" />
-                  {vacation.vacation.comments&&vacation.vacation.comments.length}
+                  {vacation.vacation.totalComment}
                 </Tooltip>
               </Grid>
               <Grid item>

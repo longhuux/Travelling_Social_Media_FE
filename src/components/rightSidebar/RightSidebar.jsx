@@ -65,14 +65,14 @@ function RightSidebar(props) {
                     </div>
                     <p className="">{vacation.desc}</p>
                     <div className="flex justify-around mt-3">
-                      <Button
+                      {inProgressVacations.createdBy===user.user._id&&<Button
                         className="w-[134px]"
                         variant="outlined"
                         color="error"
                         onClick={() => handleFinishVacation(vacation._id)}
                       >
                         Finish
-                      </Button>
+                      </Button>}
                       <CreatePost vacationId={vacation._id} />
                     </div>
                   </div>

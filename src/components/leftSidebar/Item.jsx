@@ -22,16 +22,16 @@ const Item = () => {
   };
 
   return <>
-    <Box sx={{ width: "100%", typography: "body1" }}>
+    <Box className="w-full" sx={{ width: "100%", typography: "body1" }}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 onChange={handleTabChange}
                 aria-label="lab API tabs example"
               >
-                <Tab label="Vaction" value="1" />
-                <Tab label="Albums" value="2" />
-                <Tab label="Likes" value="3" />
+                <Tab className="w-4/12" label="Vaction" value="1" />
+                <Tab className="w-4/12" label="Albums" value="2" />
+                <Tab className="w-4/12" label="Likes" value="3" />
               </TabList>
             </Box>
             <TabPanel value="1">Item One</TabPanel>

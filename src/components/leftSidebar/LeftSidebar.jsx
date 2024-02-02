@@ -145,7 +145,7 @@ function LeftSidebar(props) {
                 @{user.user.userName}
               </div>
             </div>
-            <div className="w-[19px] h-[19px] relative">
+            <div >
               <Button
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}
