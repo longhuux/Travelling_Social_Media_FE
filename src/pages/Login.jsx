@@ -113,7 +113,9 @@ export default function SignInSide() {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        />
+        >
+        <div className="absolute w-7/12 ml-4 top-1/4 text-white font-extrabold text-8xl drop-shadow-[0_35px_35px_rgba(0,0,0,2)] font-mono">Share your trip to everyone!</div>
+        </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{

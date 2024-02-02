@@ -34,7 +34,7 @@ const Profiles = () => {
   };
 
   return (
-    <div>
+    <div className="w-[643px] h-full px-3 overflow-y-auto scroll-smooth">
       <section className={`z-50 flex items-center sticky top-0 bg-white`}>
         <KeyboardBackspaceIcon
           className="cursor-pointer"

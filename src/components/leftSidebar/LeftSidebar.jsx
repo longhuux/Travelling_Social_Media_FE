@@ -18,8 +18,9 @@ import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { CLOUDINARY_URL } from "../../config";
+import CreateAlbum from "./CreateAlbum";
 
-function LeftSidebar() {
+function LeftSidebar(props) {
   const user = useSelector((state) => state.users);
   // console.log(user);
   const dispatch = useDispatch();
@@ -123,7 +124,7 @@ function LeftSidebar() {
               </div>
             </div>
           </div>
-          <CreateJourney />
+          {props.value!==1?(<CreateJourney />):(<CreateAlbum />)}
         </div>
         <div className="self-stretch grow shrink basis-0 justify-start items-end gap-[29px] inline-flex">
           <div className="grow shrink basis-0 h-[90px] py-6 justify-start items-center gap-4 flex">

@@ -26,7 +26,7 @@ export default function CreatePost(prop) {
   const [vacation, setVacation] = React.useState()
   const fetchData = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:8000/vacation/detail/${id}`);
+      const response = await axios.get(`${process.env.API_URL}vacation/detail/${id}`);
       return response.data.data;
     } catch (error) {
       console.error('Error fetching data:', error);

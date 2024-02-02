@@ -3,21 +3,31 @@ import { Button, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CreatePost from "./CreatePost";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchInProgressVacations } from "../../redux/slice/vacationSlice";
+import {
+  fetchInProgressVacations,
+  finishVacation,
+} from "../../redux/slice/vacationSlice";
+import axios from "axios";
 
-function RightSidebar() {
+function RightSidebar(props) {
   const user = useSelector((state) => state.users);
   const dispatch = useDispatch();
-  const {inProgressVacations,loading,error}=useSelector((state)=>state.vacation)
+  const { inProgressVacations, loading, error } = useSelector(
+    (state) => state.vacation
+  );
   const vacations = useSelector((state) => state.vacation.vacations);
 
   useEffect(() => {
-    dispatch(fetchInProgressVacations())
+    dispatch(fetchInProgressVacations());
   }, [dispatch, user]);
 
   useEffect(() => {
-    dispatch(fetchInProgressVacations())
+    dispatch(fetchInProgressVacations());
   }, [vacations]);
+
+  const handleFinishVacation = (vacationId) => {
+    dispatch(finishVacation(vacationId));
+  };
 
   if (loading === "loading") {
     return (
@@ -40,35 +50,40 @@ function RightSidebar() {
           <div className=" text-neutral-900 text-xl font-bold leading-normal">
             Your curent vacation
           </div>
-          {inProgressVacations&&inProgressVacations.length > 0 ? (
-            <div className="w-full">
-              {inProgressVacations.map((vacation) => (
-                <div
-                  key={vacation._id}
-                  className="rounded-2xl bg-white p-3 mb-4"
-                >
-                  <h1 className="text-sky-600 text-lg">{vacation.title}</h1>
-                  <div className="flex gap-x-1">
-                    <People />
-                    <p>{vacation.participants.length} members</p>
+          {props.value!==1?(<div className="w-full">
+            {inProgressVacations && inProgressVacations.length > 0 ? (
+              <div className="w-full">
+                {inProgressVacations.map((vacation) => (
+                  <div
+                    key={vacation._id}
+                    className="rounded-2xl bg-white p-3 mb-4 hover:bg-slate-50"
+                  >
+                    <h1 className="text-sky-600 text-lg">{vacation.title}</h1>
+                    <div className="flex gap-x-1">
+                      <People />
+                      <p>{vacation.participants.length} members</p>
+                    </div>
+                    <p className="">{vacation.desc}</p>
+                    <div className="flex justify-around mt-3">
+                      <Button
+                        className="w-[134px]"
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleFinishVacation(vacation._id)}
+                      >
+                        Finish
+                      </Button>
+                      <CreatePost vacationId={vacation._id} />
+                    </div>
                   </div>
-                  <p className="">{vacation.desc}</p>
-                  <div className="flex justify-around mt-3">
-                    <Button
-                      className="w-[134px]"
-                      variant="outlined"
-                      color="error"
-                    >
-                      Finish
-                    </Button>
-                    <CreatePost vacationId={vacation._id}/>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="h-[80px] flex justify-center items-center text-slate-400">You don't have any vacation</p>
-          )}
+                ))}
+              </div>
+            ) : (
+              <p className="h-[80px] flex justify-center items-center text-slate-400">
+                You don't have any vacation
+              </p>
+            )}
+          </div>):(<div></div>)}
         </div>
       </div>
     </>

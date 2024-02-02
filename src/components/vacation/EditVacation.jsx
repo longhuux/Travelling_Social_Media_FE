@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers } from "../../redux/slice/userSlice";
-import { createVacation } from "../../redux/slice/vacationSlice";
+import { createVacation, updateVacation } from "../../redux/slice/vacationSlice";
 import { v4 as uuidv4 } from "uuid";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
@@ -140,15 +140,15 @@ export default function EditVacation(vacation) {
     );
   }
   const handleSubmit = async () => {
+    const id =  vacation.vacation._id
     try {
-      dispatch(createVacation({vacationData}));
+      dispatch(updateVacation({id,vacationData}));
       <Alert >Vacation has been created!</Alert>
       handleClose();
     } catch (error) {
       console.error("Error:", error.message);
     }
   };
-  console.log(userTags)
 
   const getModules = () => {
     return sortedMilestones.map((milestone, index) => {
@@ -184,7 +184,7 @@ export default function EditVacation(vacation) {
       >
         <Box sx={style} className=" !border-none !rounded-lg !w-[600px]	">
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Start a new trip
+            Edit your trip
           </Typography>
           <select
             className="w-fit rounded-full border border-solid text-blue-400 px-2 border-blue-400"
@@ -315,9 +315,9 @@ export default function EditVacation(vacation) {
 
             <Button
               className="w-full !bg-blue-500 !rounded-full !text-white"
-              onClick={handleSubmit}
+              onClick={()=>handleSubmit()}
             >
-              Create
+              Update
             </Button>
           </form>
         </Box>

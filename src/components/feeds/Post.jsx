@@ -98,7 +98,7 @@ const Post = (props) => {
               item
               xs={8}
             >
-              <IconButton size="large">
+              <IconButton onClick={()=>navigate(`/post/${props.post._id}`)} size="large">
                 <ModeCommentOutlinedIcon />
               </IconButton>
               {props.post.comments && <h1>{props.post.comments.length}</h1>}{" "}
@@ -107,24 +107,6 @@ const Post = (props) => {
         </div>
         <div className="flex flex-col">
           <Link onClick={()=>navigate(`/post/${props.post._id}`)} className="cursor-pointer">See comments</Link>
-          <div className="flex gap-x-4 mt-2 items-center">
-            <Avatar src={`${CLOUDINARY_URL}/${user?.user.avatar}`} />
-            <TextField
-              className="w-full"
-              InputProps={{
-                style: {
-                  borderRadius: "12px",
-                },
-                endAdornment: (
-                  <InputAdornment className="cursor-pointer" position="end">
-                    <SendIcon color="primary" />
-                  </InputAdornment>
-                ),
-              }}
-              multiline
-              label="Write a comment..."
-            />
-          </div>
         </div>
       </div>
     </>
