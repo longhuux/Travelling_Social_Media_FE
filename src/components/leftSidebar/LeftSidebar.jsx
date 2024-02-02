@@ -112,7 +112,7 @@ function LeftSidebar(props) {
                 <PersonIcon />
               </div>
               <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
-                <Link to="/profile/:id">Profile</Link>
+                <Link to={`/profile/${user.user._id}`}>Profile</Link>
               </div>
             </div>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
@@ -141,7 +141,7 @@ function LeftSidebar(props) {
                 @{user.user.userName}
               </div>
             </div>
-            <div className="w-[19px] h-[19px] relative">
+            <div >
               <Button
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}

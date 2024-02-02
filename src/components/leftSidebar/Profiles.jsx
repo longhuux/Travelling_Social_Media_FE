@@ -53,7 +53,7 @@ const Profiles = () => {
         ></img>
       </section>
 
-      <section className="pl-6">
+      <section className="px-6 border border-b-0">
         <div className="flex justify-between items-start mt-5 h-[5rem]">
           <Avatar
             className="transform -translate-y-24"
@@ -125,7 +125,7 @@ const Profiles = () => {
           </div>
         </div>
       </section>
-      <section className="py-5">
+      <section className=" py-5 border border-y-0">
         <Item />
       </section>
     </div>

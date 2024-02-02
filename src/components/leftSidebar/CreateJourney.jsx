@@ -207,9 +207,9 @@ export default function CreateJourney() {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        className=" !overflow-auto"
+        className="!overflow-auto"
       >
-        <Box sx={style} className=" !border-none !rounded-lg !w-[600px]	">
+        <Box sx={style} className=" !border-none !rounded-lg !w-[600px]">
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Start a new trip
           </Typography>
@@ -307,6 +307,8 @@ export default function CreateJourney() {
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
                   label="Time"
+                  minDate={estimatedTime[0]}
+                  maxDate={estimatedTime[1]}
                   value={milestonesDate}
                   onChange={(newValue) => setMilestonesDate(newValue)}
                 />
