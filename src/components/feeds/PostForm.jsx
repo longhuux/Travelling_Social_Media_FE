@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { Alert, IconButton, TextField } from "@mui/material";
+import { Alert, IconButton, Snackbar, TextField } from "@mui/material";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import Button from "@mui/material/Button";
@@ -26,6 +26,29 @@ function PostForm(vacation) {
   const [selectMilestoneForm, setSelectMilestoneForm] = useState(true);
   const [createMilestoneForm, setCreateMilestoneForm] = useState(false);
   const [content, setContent] = useState("");
+  const [openAlert, setOpenAlert] = useState(false);
+  const [openAlert2, setOpenAlert2] = useState(false);
+
+
+  const handleShowAlert = () => {
+    setOpenAlert(true);
+  };
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+  };
+  const handleShowAlert2 = () => {
+    setOpenAlert2(true);
+  };
+
+  const handleCloseAlert2 = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert2(false);
+  };
 
   const handleMilestoneChange = (e) => {
     setMilestone(e.target.value);
@@ -72,20 +95,24 @@ function PostForm(vacation) {
     if (selectedFile) {
       formData.append("images", selectedFile);
     }
-    const apiUrl =
-      `${process.env.API_URL}post/create-post/`;
+    const apiUrl = `${process.env.API_URL}post/create-post`;
 
     try {
-      const response = await axios.post(apiUrl, formData,{
+      const response = await axios.post(apiUrl, formData, {
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       });
       console.log(response);
-      if (response.statusText === "OK") {
+      if (response.status === 200) {
         console.log("Data successfully sent to the API");
+        setContent("")
+        setSelectedFile(null)
+        setPreview(null)
+        handleShowAlert()
       } else {
         console.error("Failed to send data to the API");
+        handleShowAlert2()
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -94,7 +121,7 @@ function PostForm(vacation) {
 
   return (
     <>
-      <div className="flex w-full h-auto mt-2">
+      <div className="flex w-full h-auto mt-2 overflow-y-auto">
         <div className="flex flex-col w-full p-3 ">
           <div className="flex my-3 content-center items-center ">
             <h2 className="mr-4">Milestone: </h2>
@@ -166,13 +193,13 @@ function PostForm(vacation) {
                   className="rounded-lg"
                   src={preview}
                   alt="Preview"
-                  style={{ maxWidth: "100%", maxHeight: "300px" }}
+                  style={{ maxWidth: "100%" }}
                 />
               ) : (
                 <video
                   className="rounded-lg"
                   controls
-                  style={{ maxWidth: "100%", maxHeight: "300px" }}
+                  style={{ maxWidth: "100%" }}
                 >
                   <source src={preview} type={selectedFile.type} />
                   Your browser does not support the video tag.
@@ -216,7 +243,36 @@ function PostForm(vacation) {
               Post
             </Button>
           </div>
-          <div></div>
+          <Snackbar
+            open={openAlert}
+            autoHideDuration={6000}
+            onClose={handleCloseAlert}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <Alert
+              onClose={handleCloseAlert}
+              severity="success"
+              variant="filled"
+              sx={{ width: "100%", zIndex: 100000 }}
+            >
+              Successfully created a post
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={openAlert2}
+            autoHideDuration={6000}
+            onClose={handleCloseAlert2}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <Alert
+              onClose={handleCloseAlert2}
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%", zIndex: 100000 }}
+            >
+              Failed create a post!
+            </Alert>
+          </Snackbar>
         </div>
       </div>
     </>

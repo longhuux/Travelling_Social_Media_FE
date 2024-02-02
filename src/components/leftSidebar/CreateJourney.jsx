@@ -17,7 +17,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { LicenseInfo } from "@mui/x-date-pickers-pro";
 import AddIcon from "@mui/icons-material/Add";
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
@@ -52,7 +52,7 @@ const style = {
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function BasicModal() {
+export default function CreateJourney() {
   const dispatch = useDispatch();
   const { users, status, error } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
@@ -67,7 +67,18 @@ export default function BasicModal() {
   const [milestonesDate, setMilestonesDate] = useState(dayjs());
   const [sortedMilestones, setSortedMilestones] = useState([]);
   const user = useSelector((state) => state.users);
+  const [openAlert, setOpenAlert] = useState(false);
 
+  const handleShowAlert = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenAlert(false);
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -92,7 +103,11 @@ export default function BasicModal() {
   }, [dispatch]);
 
   if (status === "loading") {
-    return <div className="w-full flex justify-center items-center"><CircularProgress color="inherit" className="flex justify-center" /></div>;
+    return (
+      <div className="w-full flex justify-center items-center">
+        <CircularProgress color="inherit" className="flex justify-center" />
+      </div>
+    );
   }
 
   if (status === "failed") {
@@ -139,8 +154,8 @@ export default function BasicModal() {
   }
   const handleSubmit = async () => {
     try {
-      dispatch(createVacation({vacationData}));
-      <Alert >Vacation has been created!</Alert>
+      dispatch(createVacation({ vacationData }));
+      handleShowAlert();
       handleClose();
     } catch (error) {
       console.error("Error:", error.message);
@@ -172,6 +187,21 @@ export default function BasicModal() {
       >
         Start a trip
       </Button>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%",zIndex: 100000 }}
+        >
+          Successfully created a vacation
+        </Alert>
+      </Snackbar>
       <Modal
         open={open}
         onClose={handleClose}
@@ -308,7 +338,6 @@ export default function BasicModal() {
             >
               {getModules()}
             </Timeline>
-
             <Button
               className="w-full !bg-blue-500 !rounded-full !text-white"
               onClick={handleSubmit}

@@ -12,7 +12,6 @@ import Profile from "./pages/Profile";
 import PostPage from "./pages/PostPage";
 import { CLOUDINARY_URL } from "./config";
 
-
 function App() {
   return (
     <>

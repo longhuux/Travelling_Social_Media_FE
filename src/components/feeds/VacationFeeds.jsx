@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PeopleIcon from "@mui/icons-material/People";
-import { Avatar, AvatarGroup, Button, Grid, IconButton, Popover, Tooltip } from "@mui/material";
+import { Alert, Avatar, AvatarGroup, Button, Grid, IconButton, Popover, Snackbar, Tooltip } from "@mui/material";
 import { AVATAR_URL, CLOUDINARY_URL } from "../../config";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import Accordion from "@mui/material/Accordion";
@@ -21,15 +21,15 @@ import axios from "axios";
 import { Delete, Edit, LockPerson, MoreHoriz, Public } from "@mui/icons-material";
 import relativeTime from "dayjs/plugin/relativeTime";
 import EditVacation from "../vacation/EditVacation";
+import { deleteVacation } from "../../redux/slice/vacationSlice";
 
 function VacationFeeds(vacation) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.users);
-
   dayjs.extend(relativeTime);
-
   const [anchorEl, setAnchorEl] = React.useState(null);
+  
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -62,10 +62,14 @@ function VacationFeeds(vacation) {
       console.error("Error incrementing views:", error);
     }
   };
+  const handleDeleteVacation = () =>{
+    const id = vacation.vacation._id
+    dispatch(deleteVacation(id))
+  }
   return (
     <>
       <div className="mb-5">
-        <div className="border w-full rounded-lg px-8 pt-8 rounded-b-none">
+        <div className="border w-full rounded-lg px-8 pt-8 rounded-b-none hover:bg-slate-100">
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-x-3">
               <Avatar
@@ -90,12 +94,12 @@ function VacationFeeds(vacation) {
                     </Tooltip>
                   )}
                   {vacation.vacation.privacy === "onlyMe" && (
-                    <Tooltip title="Only me">
+                    <Tooltip title="Private">
                       <LockPerson fontSize="small" color="disabled" />
                     </Tooltip>
                   )}
                   {vacation.vacation.privacy === "onlyUserChoose" && (
-                    <Tooltip title="Only the chosen ones">
+                    <Tooltip title="Customs">
                       <Edit fontSize="small" color="disabled" />
                     </Tooltip>
                   )}
@@ -121,7 +125,7 @@ function VacationFeeds(vacation) {
                 <div className="flex flex-col p-3">
 
                 <EditVacation vacation={vacation.vacation}/>
-                <Delete/>
+                <Button onClick={()=>handleDeleteVacation()} color="warning" startIcon={<Delete/>}>Delete</Button>
                 </div>
               </Popover></div>)}
             </div>
@@ -206,13 +210,13 @@ function VacationFeeds(vacation) {
               <Grid item>
                 <Tooltip title="React">
                   <FavoriteIcon className="mr-1" color="warning" />
-                  {vacation.vacation.likes.total}
+                  {vacation.vacation.likes&&vacation.vacation.likes.total}
                 </Tooltip>
               </Grid>
               <Grid item>
                 <Tooltip title="Comment">
                   <ChatBubbleIcon className="mr-1" color="primary" />
-                  {vacation.vacation.comments.length}
+                  {vacation.vacation.comments&&vacation.vacation.comments.length}
                 </Tooltip>
               </Grid>
               <Grid item>

@@ -142,6 +142,7 @@ const Post = ({ postDetail, user }) => {
               <Avatar src={`${CLOUDINARY_URL}/${user?.user.avatar}`} />
               <TextField
                 className="w-full"
+                autoFocus={true}
                 InputProps={{
                   style: {
                     borderRadius: "12px",

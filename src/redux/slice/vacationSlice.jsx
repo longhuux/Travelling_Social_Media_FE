@@ -3,9 +3,9 @@ import axios from "axios";
 
 export const fetchVacations = createAsyncThunk(
   "vacation/fetchVacations",
-  async ({ pageSize, pageIndex }) => {
+  async () => {
     const response = await axios.get(
-      `${process.env.API_URL}vacation/get-all-vacations?pageSize=${pageSize}&pageIndex=${pageIndex}`,
+      `${process.env.API_URL}vacation/get-all-vacations?pageSize=${100000000}&pageIndex=${1}`,
       {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       }
@@ -59,6 +59,57 @@ export const fetchInProgressVacations = createAsyncThunk(
   }
 );
 
+export const finishVacation = createAsyncThunk(
+  "vacation/finish",
+  async (id) => {
+    const response = await axios.patch(`${process.env.API_URL}vacation/finish/${id}`,{status: "Finished"},{
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+    return response.data.data;
+  }
+)
+
+export const updateVacation = createAsyncThunk(
+  "vacation/update",
+  async ({id,vacationData}) => {
+    const response = await axios.patch(`${process.env.API_URL}vacation/${id}`,vacationData,{
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+    return response.data.data
+  }
+)
+export const deleteVacation = createAsyncThunk(
+  "vacation/delete",
+  async (id) => {
+    const response = await axios.delete(`${process.env.API_URL}vacation/delete/${id}`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+    console.log(response)
+    return response.data.data;
+  }
+);
+export const createPostInVacation = createAsyncThunk(
+  "vacation/createPostInVacation",
+  async ({ vacationId, milestoneId, postData }) => {
+    const response = await axios.post(
+      `${process.env.API_URL}post/create-post`,
+      { vacationId, milestoneId, postData },
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data.data;
+  }
+);
+
 const vacationSlice = createSlice({
   name: "vacation",
   initialState: {
@@ -81,22 +132,16 @@ const vacationSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      // .addCase(fetchVacations.pending, (state) => {
-      //   state.status = "loading";
-      // })
-      // .addCase(fetchVacations.fulfilled, (state, action) => {
-      //   state.status = "succeeded";
-      //   state.vacations = [...state.vacations, ...action.payload];
-      // })
-      // .addCase(fetchVacations.rejected, (state, action) => {
-      //   state.status = "failed";
-      //   state.error = action.error.message;
-      // })
+      .addCase(fetchVacations.pending, (state) => {
+        state.status = "loading";
+      })
       .addCase(fetchVacations.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.vacations = [...state.vacations, ...action.payload];
-        state.currentPage += 1;
-        state.hasMore = state.currentPage < state.totalPages;
+      })
+      .addCase(fetchVacations.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       })
       .addCase(fetchVacationDetail.pending, (state) => {
         state.status = "loading";
@@ -106,12 +151,29 @@ const vacationSlice = createSlice({
         if (state.detail !== action.payload) {
           state.detail = action.payload;
         }
-        
       })
       .addCase(fetchVacationDetail.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
+      // .addCase(createPostInVacation.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   state.detail = state.vacations.map(vacation =>
+      //     vacation._id === action.payload.vacationId
+      //       ? {
+      //           ...vacation,
+      //           milestones: vacation.milestones.map(milestone =>
+      //             milestone._id === action.payload.milestoneId
+      //               ? {
+      //                   ...milestone,
+      //                   posts: [...milestone.posts, action.payload.postData],
+      //                 }
+      //               : milestone
+      //           ),
+      //         }
+      //       : vacation
+      //   )
+      // })
       .addCase(fetchInProgressVacations.pending, (state) => {
         state.status = "loading";
       })
@@ -120,6 +182,41 @@ const vacationSlice = createSlice({
         state.inProgressVacations = action.payload;
       })
       .addCase(fetchInProgressVacations.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(finishVacation.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.vacations = state.vacations.map(vacation =>
+          vacation._id === action.payload._id ? action.payload : vacation
+        );
+        state.inProgressVacations = state.inProgressVacations.filter(vacation =>
+          vacation._id !== action.payload._id
+        );
+      })
+      .addCase(updateVacation.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateVacation.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.vacations = state.vacations.map(vacation =>
+          vacation._id === action.payload._id ? action.payload : vacation
+        );
+        state.inProgressVacations = state.inProgressVacations.map(vacation =>
+          vacation._id === action.payload._id ? action.payload : vacation
+        );
+      })
+      .addCase(updateVacation.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(deleteVacation.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteVacation.fulfilled, (state, action) => {
+        state.status = "succeeded";
+      })
+      .addCase(deleteVacation.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

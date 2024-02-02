@@ -11,15 +11,16 @@ import logo from "../.././assets/xjourney.png";
 import CreateJourney from "./CreateJourney";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { loginSuccess } from "../../redux/slice/user.slice";
+import { loginSuccess, registerSuccess } from "../../redux/slice/user.slice";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { CLOUDINARY_URL } from "../../config";
+import CreateAlbum from "./CreateAlbum";
 
-function LeftSidebar() {
+function LeftSidebar(props) {
   const user = useSelector((state) => state.users);
   // console.log(user);
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function LeftSidebar() {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       dispatch(loginSuccess(JSON.parse(savedUser)));
+      dispatch(registerSuccess(JSON.parse(savedUser)));
     }
   }, [dispatch]);
 
@@ -122,7 +124,7 @@ function LeftSidebar() {
               </div>
             </div>
           </div>
-          <CreateJourney />
+          {props.value!==1?(<CreateJourney />):(<CreateAlbum />)}
         </div>
         <div className="self-stretch grow shrink basis-0 justify-start items-end gap-[29px] inline-flex">
           <div className="grow shrink basis-0 h-[90px] py-6 justify-start items-center gap-4 flex">
