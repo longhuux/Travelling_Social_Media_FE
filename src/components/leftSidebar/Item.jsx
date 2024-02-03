@@ -37,6 +37,8 @@ const Item = () => {
     }
   };
 
+  console.log(userVacations)
+
   return (
     <>
       <Box className="w-full" sx={{ width: "100%", typography: "body1" }}>
