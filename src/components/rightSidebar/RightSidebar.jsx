@@ -8,6 +8,9 @@ import {
   finishVacation,
 } from "../../redux/slice/vacationSlice";
 import axios from "axios";
+import { DateCalendar } from "@mui/x-date-pickers";
+import { DateRange } from "@mui/icons-material";
+import dayjs from "dayjs";
 
 function RightSidebar(props) {
   const user = useSelector((state) => state.users);
@@ -50,7 +53,6 @@ function RightSidebar(props) {
           <div className=" text-neutral-900 text-xl font-bold leading-normal">
             Your curent vacation
           </div>
-          {props.value!==1?(<div className="w-full">
             {inProgressVacations && inProgressVacations.length > 0 ? (
               <div className="w-full">
                 {inProgressVacations.map((vacation) => (
@@ -63,9 +65,13 @@ function RightSidebar(props) {
                       <People />
                       <p>{vacation.participants.length} members</p>
                     </div>
+                    <div className="flex gap-x-1">
+                    <DateRange/>
+                    {dayjs(vacation.startedAt).format("LL")}
+                    </div>
                     <p className="">{vacation.desc}</p>
                     <div className="flex justify-around mt-3">
-                      {inProgressVacations.createdBy===user.user._id&&<Button
+                      {vacation.createdBy===user.user._id&&<Button
                         className="w-[134px]"
                         variant="outlined"
                         color="error"
@@ -83,7 +89,6 @@ function RightSidebar(props) {
                 You don't have any vacation
               </p>
             )}
-          </div>):(<div></div>)}
         </div>
       </div>
     </>
