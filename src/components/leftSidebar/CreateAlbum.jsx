@@ -164,7 +164,7 @@ export default function CreateAlbum() {
       }
     };
     fetchAllPosts();
-  });
+  },[vacation]);
 
   useEffect(() => {
     const userId = user.user._id;

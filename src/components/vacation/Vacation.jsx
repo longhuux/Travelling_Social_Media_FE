@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { AVATAR_URL } from "../../config";
+import { AVATAR_URL, CLOUDINARY_URL } from "../../config";
 import PeopleIcon from "@mui/icons-material/People";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { orange } from "@mui/material/colors";
@@ -42,6 +42,8 @@ function Vacation(id) {
       });
   }, [dispatch, id]);
 
+  console.log(vacationDetail)
+
   if (!vacationDetail) {
     return (
       <div className="w-[643px] h-screen flex justify-center items-center">
@@ -58,13 +60,18 @@ function Vacation(id) {
             <TimelineConnector sx={{ bgcolor: "success.main" }} />
           </TimelineSeparator>
           <TimelineContent sx={{ py: "1px", px: 2 }}>
-            <Typography className="flex" color="success.main" variant="h6" component="span">
-              {dayjs(milestone.time).format("LL")} &#x2022; 
+            <Typography
+              className="flex"
+              color="success.main"
+              variant="h6"
+              component="span"
+            >
+              {dayjs(milestone.time).format("LL")} &#x2022;
               <p className="text-slate-500 ml-1 ">{milestone.desc}</p>
             </Typography>
             <ul>
               {milestone.posts.map((post) => {
-                return(
+                return (
                   <li className="list-none mt-3" key={uuidv4()}>
                     <Post post={post} />
                   </li>
@@ -79,30 +86,38 @@ function Vacation(id) {
   return (
     <>
       <div className="w-[643px] px-3 pt-16 h-full flex-col justify-start items-start inline-flex overflow-y-auto scroll-smooth">
-      <section className='z-50 w-[630px] px-3 flex items-center fixed top-0 bg-white bg-opacity-90 border-b'>
-        <KeyboardBackspace
-          className="cursor-pointer"
-          onClick={() => history.back()}
+        <section className="z-50 w-[630px] px-3 flex items-center fixed top-0 bg-white bg-opacity-90 border-b">
+          <KeyboardBackspace
+            className="cursor-pointer"
+            onClick={() => history.back()}
           />
-        <h1 className="py-3 text-xl font-bold opacity-80 ml-5">Vacation</h1>
-      </section>
+          <h1 className="py-3 text-xl font-bold opacity-80 ml-5">Vacation</h1>
+        </section>
         <div className="w-full border-b mb-3 pb-17 flex flex-col justify-center items-center self-center">
-          <h1 className="f font-bold text-2xl text-blue">
-            {vacationDetail.title}
-          </h1>
-          <Avatar
-            src={`${vacationDetail?.createdBy.avatar}`}
-            sx={{ width: 60, height: 60 }}
-          ></Avatar>
+          <div className="flex gap-x-4">
+            <div className="">
+              <Avatar
+                src={`${CLOUDINARY_URL}/${vacationDetail?.createdBy.avatar}`}
+                sx={{ width: 60, height: 60 }}
+              ></Avatar>
+              <p className="font-bold">{vacationDetail.createdBy.fullName}</p>
+            </div>
+            <div className="flex flex-col">
 
-          <p>{vacationDetail.createdBy.fullName}</p>
+            <h1 className="f font-bold text-2xl text-blue">
+              {vacationDetail.title}
+            </h1>
+            <p>{vacationDetail.desc}</p>
+            </div>
+          </div>
+
           <div className="flex items-center">
             <PeopleIcon fontSize="large" color="primary" />
             <p className="mx-2">{vacationDetail.participants.length} members</p>
             <AvatarGroup max={10} className="justify-self-end">
               {vacationDetail.participants.map((user) => (
                 <Tooltip title={`${user.fullName}`} key={user._id}>
-                  <Avatar src={user.avatar} />
+                  <Avatar src={`${CLOUDINARY_URL}/${user.avatar}`} />
                 </Tooltip>
               ))}
             </AvatarGroup>

@@ -66,6 +66,7 @@ function VacationFeeds(vacation) {
     const id = vacation.vacation._id
     dispatch(deleteVacation(id))
   }
+  console.log(vacation.vacation)
   return (
     <>
       <div className="mb-5">

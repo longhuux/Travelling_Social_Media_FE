@@ -39,6 +39,7 @@ function RightSidebar(props) {
       </div>
     );
   }
+  console.log(inProgressVacations)
   return (
     <>
       <div className="w-[360px] h-[1224px] pr-3 pt-1 flex-col justify-start items-center gap-4 inline-flex overflow-y-auto top-0 sticky">
@@ -71,7 +72,7 @@ function RightSidebar(props) {
                     </div>
                     <p className="">{vacation.desc}</p>
                     <div className="flex justify-around mt-3">
-                      {vacation.createdBy===user.user._id&&<Button
+                      {vacation.createdBy._id===user.user._id&&<Button
                         className="w-[134px]"
                         variant="outlined"
                         color="error"

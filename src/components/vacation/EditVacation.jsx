@@ -132,7 +132,6 @@ export default function EditVacation(vacation) {
     participants: userTags.map((userTags) => userTags._id),
     startedAt: estimatedTime[0],
     endedAt: estimatedTime[1],
-    milestones: milestones,
   };
   if (selectedOption === "onlyUserChoose") {
     vacationData.userChoose = allowedUsers.map(
@@ -143,29 +142,10 @@ export default function EditVacation(vacation) {
     const id =  vacation.vacation._id
     try {
       dispatch(updateVacation({id,vacationData}));
-      <Alert >Vacation has been created!</Alert>
       handleClose();
     } catch (error) {
       console.error("Error:", error.message);
     }
-  };
-
-  const getModules = () => {
-    return sortedMilestones.map((milestone, index) => {
-      return (
-        <TimelineItem key={uuidv4()}>
-          <TimelineOppositeContent color="textSecondary">
-            {dayjs(milestone.time).format("LL")}
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>{milestone.desc}</TimelineContent>
-          <button onClick={() => handleDeleteMilestone(index)}>Delete</button>
-        </TimelineItem>
-      );
-    });
   };
   return (
     <>
@@ -274,45 +254,6 @@ export default function EditVacation(vacation) {
                 />
               </DemoItem>
             </LocalizationProvider>
-            <div className="flex items-center">
-              <h1 className="mr-4">Milestones: </h1>
-            </div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker
-                  label="Time"
-                  value={milestonesDate}
-                  onChange={(newValue) => setMilestonesDate(newValue)}
-                />
-                <TextField
-                  id="outlined-multiline-flexible"
-                  label="Describe"
-                  variant="outlined"
-                  multiline
-                  maxRows={4}
-                  className="w-full"
-                  value={milestonesDesc}
-                  onChange={handleMilestonesDescChange}
-                />
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={handleAddMilestone}
-                >
-                  <AddIcon />
-                </Button>
-              </DemoContainer>
-            </LocalizationProvider>
-            <Timeline
-              sx={{
-                [`& .${timelineOppositeContentClasses.root}`]: {
-                  flex: 0.2,
-                },
-              }}
-            >
-              {getModules()}
-            </Timeline>
-
             <Button
               className="w-full !bg-blue-500 !rounded-full !text-white"
               onClick={()=>handleSubmit()}
