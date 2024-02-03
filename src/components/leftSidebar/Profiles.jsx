@@ -35,17 +35,15 @@ const Profiles = () => {
 
   return (
     <div className="w-[643px] h-full px-3 overflow-y-auto scroll-smooth">
-      <section className={`z-50 flex items-center sticky top-0 bg-white`}>
+      <section className='z-50 w-[630px] px-3 flex items-center fixed top-0 bg-white bg-opacity-90 border-b'>
         <KeyboardBackspaceIcon
           className="cursor-pointer"
-          onClick={handleBack}
-        />
-        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">
-          {user.user.fullName}
-        </h1>
+          onClick={() => history.back()}
+          />
+        <h1 className="py-3 text-xl font-bold opacity-80 ml-5">{user.user.fullName}</h1>
       </section>
 
-      <section>
+      <section className="mt-14">
         <img
           className="w-[100%] h-[15rem] object-cover"
           src={`https://res.cloudinary.com/dmonbjexk/image/upload/f_auto,q_auto/${user.user.cover}`}
@@ -126,7 +124,7 @@ const Profiles = () => {
         </div>
       </section>
       <section className=" py-5 border border-y-0">
-        <Item />
+        <Item/>
       </section>
     </div>
   );

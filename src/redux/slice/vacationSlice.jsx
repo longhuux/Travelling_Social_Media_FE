@@ -109,11 +109,26 @@ export const createPostInVacation = createAsyncThunk(
     return response.data.data;
   }
 );
+export const fetchUserVacations = createAsyncThunk(
+  "vacation/fetchUserVacations",
+  async (userId) => {
+    const response = await axios.get(
+      `${process.env.API_URL}vacation/${userId}`,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data.data;
+  }
+);
 
 const vacationSlice = createSlice({
   name: "vacation",
   initialState: {
     vacations: [],
+    userVacations: [],
     inProgressVacations: [],
     status: "idle",
     error: null
@@ -217,6 +232,17 @@ const vacationSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(deleteVacation.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchUserVacations.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchUserVacations.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.userVacations = action.payload;
+      })
+      .addCase(fetchUserVacations.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

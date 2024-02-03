@@ -54,22 +54,23 @@ function LeftSidebar(props) {
     <div>
       <div className="w-[275px] h-screen px-3 flex-col justify-start items-start inline-flex top-0 sticky">
         <div className="self-stretch h-14 py-[3px] flex-col justify-start items-start gap-2.5 flex my-6">
-          <img src={logo} className="logo" />
-
+          <Link to="/">
+            <img src={logo} className="logo"></img>
+          </Link>
           <div className="w-[50px] h-[50px] flex-col justify-center items-center gap-2.5 flex" />
         </div>
         <div className="self-stretch h-[602px] flex-col justify-start items-start gap-[38px] flex">
           <div className="px-3 flex-col justify-start items-start gap-8 flex">
-          <Link to="/">
-            <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer py-2  hover:bg-slate-100 hover:rounded-full hover:p-2">
-              <div className="w-[26px] h-[26px] relative">
-                {/* <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" /> */}
-                <HomeRoundedIcon />
+            <Link to="/">
+              <div className="self-stretch h-[50px] justify-start items-center gap-5 inline-flex cursor-pointer py-2  hover:bg-slate-100 hover:rounded-full hover:p-2">
+                <div className="w-[26px] h-[26px] relative">
+                  {/* <div className="w-[7px] h-[7px] left-[17px] top-[-1px] absolute bg-sky-500 rounded-full" /> */}
+                  <HomeRoundedIcon />
+                </div>
+                <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
+                  Home
+                </div>
               </div>
-              <div className="w-[55px] text-neutral-900 text-xl font-normal leading-normal">
-                Home
-              </div>
-            </div>
             </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
@@ -110,14 +111,14 @@ function LeftSidebar(props) {
               </div>
             </div> */}
             <Link to={`/profile/${user.user._id}`}>
-            <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
-              <div className="w-[26px] h-[26px] relative">
-                <PersonIcon />
+              <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
+                <div className="w-[26px] h-[26px] relative">
+                  <PersonIcon />
+                </div>
+                <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
+                  Profile
+                </div>
               </div>
-              <div className="w-[59px] text-neutral-900 text-xl font-normal leading-normal">
-                Profile
-              </div>
-            </div>
             </Link>
             <div className="self-stretch justify-start items-center gap-5 inline-flex cursor-pointer py-2 hover:bg-slate-100 hover:rounded-full hover:p-2">
               <div className="w-[26px] h-[26px] relative">
@@ -128,13 +129,15 @@ function LeftSidebar(props) {
               </div>
             </div>
           </div>
-          {props.value!==1?(<CreateJourney />):(<CreateAlbum />)}
+          {props.value !== 1 ? <CreateJourney /> : <CreateAlbum />}
         </div>
         <div className="self-stretch grow shrink basis-0 justify-start items-end gap-[29px] inline-flex">
           <div className="grow shrink basis-0 h-[90px] py-6 justify-start items-center gap-4 flex">
             <div className="w-10 h-10 rounded-[500px] justify-center items-center flex">
               <div className="w-10 h-10 justify-center items-center inline-flex">
-                <Avatar src={`${process.env.CLOUDINARY_URL}/${user.user.avatar}`} />
+                <Avatar
+                  src={`${process.env.CLOUDINARY_URL}/${user.user.avatar}`}
+                />
               </div>
             </div>
             <div className="grow shrink basis-0 flex-col justify-start items-start gap-0.5 inline-flex">
@@ -145,7 +148,7 @@ function LeftSidebar(props) {
                 @{user.user.userName}
               </div>
             </div>
-            <div >
+            <div>
               <Button
                 id="basic-button"
                 aria-controls={open ? "basic-menu" : undefined}
